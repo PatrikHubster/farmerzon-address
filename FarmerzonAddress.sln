@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarmerzonAddress", "FarmerzonAddress\FarmerzonAddress.csproj", "{E77E7258-9778-4B0A-87DF-D1D1787B39C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarmerzonAddressDataAccess", "FarmerzonAddressDataAccess\FarmerzonAddressDataAccess.csproj", "{18ACAF13-EBE3-42BB-B487-6150A42F6B9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarmerzonAddressDataTransferModel", "FarmerzonAddressDataTransferModel\FarmerzonAddressDataTransferModel.csproj", "{08C71377-1BB1-464F-9F89-A39226D87BA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarmerzonAddressErrorHandling", "FarmerzonAddressErrorHandling\FarmerzonAddressErrorHandling.csproj", "{B0AD34CB-5444-42E1-80A4-D4EBCFDD3914}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarmerzonAddressManager", "FarmerzonAddressManager\FarmerzonAddressManager.csproj", "{1FAFCBC2-2448-4519-B6DB-5931AF001826}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FarmerzonAddressDataAccessModel", "FarmerzonAddressDataAccessModel\FarmerzonAddressDataAccessModel.csproj", "{DE2199E8-8C84-46CB-8FB9-5DB9C9DA1CED}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E77E7258-9778-4B0A-87DF-D1D1787B39C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E77E7258-9778-4B0A-87DF-D1D1787B39C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E77E7258-9778-4B0A-87DF-D1D1787B39C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E77E7258-9778-4B0A-87DF-D1D1787B39C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{18ACAF13-EBE3-42BB-B487-6150A42F6B9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{18ACAF13-EBE3-42BB-B487-6150A42F6B9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{18ACAF13-EBE3-42BB-B487-6150A42F6B9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{18ACAF13-EBE3-42BB-B487-6150A42F6B9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{08C71377-1BB1-464F-9F89-A39226D87BA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{08C71377-1BB1-464F-9F89-A39226D87BA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{08C71377-1BB1-464F-9F89-A39226D87BA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{08C71377-1BB1-464F-9F89-A39226D87BA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0AD34CB-5444-42E1-80A4-D4EBCFDD3914}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0AD34CB-5444-42E1-80A4-D4EBCFDD3914}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0AD34CB-5444-42E1-80A4-D4EBCFDD3914}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0AD34CB-5444-42E1-80A4-D4EBCFDD3914}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FAFCBC2-2448-4519-B6DB-5931AF001826}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FAFCBC2-2448-4519-B6DB-5931AF001826}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FAFCBC2-2448-4519-B6DB-5931AF001826}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FAFCBC2-2448-4519-B6DB-5931AF001826}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DE2199E8-8C84-46CB-8FB9-5DB9C9DA1CED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DE2199E8-8C84-46CB-8FB9-5DB9C9DA1CED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DE2199E8-8C84-46CB-8FB9-5DB9C9DA1CED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DE2199E8-8C84-46CB-8FB9-5DB9C9DA1CED}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

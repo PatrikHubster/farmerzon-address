@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using FarmerzonAddressManager.Implementation;
 using FarmerzonAddressManager.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -40,6 +42,31 @@ namespace FarmerzonAddress.Controllers
         {
             var states = await StateManager.GetEntitiesAsync(stateId, name);
             return Ok(new DTO.ListResponse<DTO.State>
+            {
+                Success = true,
+                Content = states
+            });
+        }
+        
+        /// <summary>
+        /// Request a list of states.
+        /// </summary>
+        /// <param name="addressIds">Find states to the listed address ids.</param>
+        /// <returns>
+        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
+        /// something went wrong.
+        /// </returns>
+        /// <response code="200">Query was able to execute.</response>
+        /// <response code="400">Article ids were invalid.</response>
+        /// <response code="500">Something unexpected happened.</response>
+        [HttpGet("get-by-address-id")]
+        [ProducesResponseType(typeof(DTO.DictionaryResponse<DTO.State>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCountriesByAddressIdAsync([FromQuery]IEnumerable<long> addressIds)
+        {
+            var states = await StateManager.GetEntitiesByAddressIdAsync(addressIds);
+            return Ok(new DTO.DictionaryResponse<DTO.State>
             {
                 Success = true,
                 Content = states

@@ -30,5 +30,14 @@ namespace FarmerzonAddressDataAccess.Implementation
                 .Where(p => ids.Contains(p.PersonId))
                 .ToListAsync();
         }
+
+        public async Task<IList<Person>> GetEntitiesByNormalizedUserNamesAsync(IEnumerable<string> normalizedUserNames, 
+            IEnumerable<string> includes)
+        {
+            return await Context.People
+                .IncludeMany(includes)
+                .Where(p => normalizedUserNames.Contains(p.NormalizedUserName))
+                .ToListAsync();
+        }
     }
 }

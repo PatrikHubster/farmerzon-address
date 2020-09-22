@@ -38,7 +38,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.CountryOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesAsync([FromQuery] long? countryId, [FromQuery] string name,
+        public async Task<IActionResult> GetCountriesAsync([FromQuery] long? countryId, [FromQuery] string name,
             [FromQuery] string code)
         {
             var countries = await CountryManager.GetEntitiesAsync(countryId, name, code);

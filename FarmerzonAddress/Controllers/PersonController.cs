@@ -38,7 +38,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.PersonOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesAsync([FromQuery] long? personId, [FromQuery] string userName,
+        public async Task<IActionResult> GetPeopleAsync([FromQuery] long? personId, [FromQuery] string userName,
             [FromQuery] string normalizedUserName)
         {
             var people = await PersonManager.GetEntitiesAsync(personId, userName, normalizedUserName);

@@ -37,7 +37,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.StateOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesAsync([FromQuery] long? stateId, [FromQuery] string name)
+        public async Task<IActionResult> GetStatesAsync([FromQuery] long? stateId, [FromQuery] string name)
         {
             var states = await StateManager.GetEntitiesAsync(stateId, name);
             return Ok(new DTO.SuccessResponse<IList<DTO.StateOutput>>
@@ -62,7 +62,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.StateOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCountriesByAddressIdAsync([FromQuery] IEnumerable<long> addressIds)
+        public async Task<IActionResult> GetStatesByAddressIdAsync([FromQuery] IEnumerable<long> addressIds)
         {
             var states = await StateManager.GetEntitiesByAddressIdAsync(addressIds);
             return Ok(new DTO.SuccessResponse<IDictionary<string, DTO.StateOutput>>

@@ -1,12 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace FarmerzonAddressDataTransferModel
 {
-    public class City
+    public class CityInput
     {
-        // primary key
-        public long CityId { get; set; }
-        
-        // attributes
+        [Required]
         public string ZipCode { get; set; }
+        [Required]
         public string Name { get; set; }
     }
 }

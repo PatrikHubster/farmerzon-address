@@ -1,12 +1,21 @@
+using System.Threading.Tasks;
+
 namespace FarmerzonAddressDataAccess.Implementation
 {
-    public abstract class AbstractRepository
+    public abstract class AbstractRepository<T>
     {
         protected FarmerzonAddressContext Context { get; set; }
 
-        public AbstractRepository(FarmerzonAddressContext context)
+        protected AbstractRepository(FarmerzonAddressContext context)
         {
             Context = context;
+        }
+
+        public async Task<T> InsertEntityAsync(T entity)
+        {
+            var result = await Context.AddAsync(entity);
+            await Context.SaveChangesAsync();
+            return (T)result.Entity;
         }
     }
 }

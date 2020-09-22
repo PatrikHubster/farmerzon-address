@@ -19,8 +19,33 @@ namespace FarmerzonAddress.Controllers
         public CityController(ICityManager cityManager)
         {
             CityManager = cityManager;
-        } 
-        
+        }
+
+        /// <summary>
+        /// Insert a city.
+        /// </summary>
+        /// <param name="city">The city which should be inserted into the system.</param>
+        /// <returns>
+        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
+        /// something went wrong in the background.
+        /// </returns>
+        /// <response code="200">Insertion was able to execute.</response>
+        /// <response code="400">One or more optional parameters were not valid.</response>
+        /// <response code="500">Something unexpected happened.</response>
+        [HttpPost]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.CityOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostCityAsync([FromBody] DTO.CityInput city)
+        {
+            var insertedCity = await CityManager.InsertEntityAsync(city);
+            return Ok(new DTO.SuccessResponse<DTO.CityOutput>
+            {
+                Success = true,
+                Content = insertedCity
+            });
+        }
+
         /// <summary>
         /// Request a list of cities.
         /// </summary>
@@ -35,14 +60,14 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">One or more optional parameters were not valid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(DTO.ListResponse<DTO.City>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.CityOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesAsync([FromQuery]long? cityId, [FromQuery]string zipCode,
+        public async Task<IActionResult> GetCitiesAsync([FromQuery] long? cityId, [FromQuery] string zipCode,
             [FromQuery]string name)
         {
             var cities = await CityManager.GetEntitiesAsync(cityId, zipCode, name);
-            return Ok(new DTO.ListResponse<DTO.City>
+            return Ok(new DTO.SuccessResponse<IList<DTO.CityOutput>>
             {
                 Success = true,
                 Content = cities
@@ -60,17 +85,68 @@ namespace FarmerzonAddress.Controllers
         /// <response code="200">Query was able to execute.</response>
         /// <response code="400">Article ids were invalid.</response>
         /// <response code="500">Something unexpected happened.</response>
-        [HttpGet("get-by-address-id")]
-        [ProducesResponseType(typeof(DTO.DictionaryResponse<DTO.City>), StatusCodes.Status200OK)]
+        [HttpGet("by-address-id")]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.CityOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesByAddressIdAsync([FromQuery]IEnumerable<long> addressIds)
+        public async Task<IActionResult> GetCitiesByAddressIdAsync([FromQuery] IEnumerable<long> addressIds)
         {
             var cities = await CityManager.GetEntitiesByAddressIdAsync(addressIds);
-            return Ok(new DTO.DictionaryResponse<DTO.City>
+            return Ok(new DTO.SuccessResponse<IDictionary<string, DTO.CityOutput>>
             {
                 Success = true,
                 Content = cities
+            });
+        }
+        
+        /// <summary>
+        /// Update a city.
+        /// </summary>
+        /// <param name="cityId">The id of the city to update.</param>
+        /// <param name="city">The city which should be updated in the system.</param>
+        /// <returns>
+        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
+        /// something went wrong in the background.
+        /// </returns>
+        /// <response code="200">Update was able to execute.</response>
+        /// <response code="400">One or more optional parameters were not valid.</response>
+        /// <response code="500">Something unexpected happened.</response>
+        [HttpPut]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.CityOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PutCityAsync([FromQuery] long cityId, [FromBody] DTO.CityInput city)
+        {
+            var updatedCity = await CityManager.UpdateEntityAsync(cityId, city);
+            return Ok(new DTO.SuccessResponse<DTO.CityOutput>
+            {
+                Success = true,
+                Content = updatedCity
+            });
+        }
+
+        /// <summary>
+        /// Delete a city.
+        /// </summary>
+        /// <param name="cityId">The id of the city to delete.</param>
+        /// <returns>
+        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
+        /// something went wrong in the background.
+        /// </returns>
+        /// <response code="200">Deletion was able to execute.</response>
+        /// <response code="400">One or more optional parameters were not valid.</response>
+        /// <response code="500">Something unexpected happened.</response>
+        [HttpDelete]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.CityOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteCityAsync([FromQuery] long cityId)
+        {
+            var deletedCity = await CityManager.DeleteEntityAsync(cityId);
+            return Ok(new DTO.SuccessResponse<DTO.CityOutput>
+            {
+                Success = true,
+                Content = deletedCity
             });
         }
     }

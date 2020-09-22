@@ -34,13 +34,13 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">One or more optional parameters were not valid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(DTO.ListResponse<DTO.State>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.StateOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesAsync([FromQuery]long? stateId, [FromQuery]string name)
+        public async Task<IActionResult> GetCitiesAsync([FromQuery] long? stateId, [FromQuery] string name)
         {
             var states = await StateManager.GetEntitiesAsync(stateId, name);
-            return Ok(new DTO.ListResponse<DTO.State>
+            return Ok(new DTO.SuccessResponse<IList<DTO.StateOutput>>
             {
                 Success = true,
                 Content = states
@@ -59,13 +59,13 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">Article ids were invalid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet("get-by-address-id")]
-        [ProducesResponseType(typeof(DTO.DictionaryResponse<DTO.State>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.StateOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCountriesByAddressIdAsync([FromQuery]IEnumerable<long> addressIds)
+        public async Task<IActionResult> GetCountriesByAddressIdAsync([FromQuery] IEnumerable<long> addressIds)
         {
             var states = await StateManager.GetEntitiesByAddressIdAsync(addressIds);
-            return Ok(new DTO.DictionaryResponse<DTO.State>
+            return Ok(new DTO.SuccessResponse<IDictionary<string, DTO.StateOutput>>
             {
                 Success = true,
                 Content = states

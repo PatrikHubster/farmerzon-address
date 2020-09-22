@@ -1,6 +1,6 @@
 namespace FarmerzonAddressDataTransferModel
 {
-    public class Country
+    public class CountryOutput
     {
         // primary key
         public long CountryId { get; set; }

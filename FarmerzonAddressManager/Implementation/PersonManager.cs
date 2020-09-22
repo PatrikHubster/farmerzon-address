@@ -17,10 +17,11 @@ namespace FarmerzonAddressManager.Implementation
             PersonRepository = personRepository;
         }
 
-        public async Task<IList<DTO.Person>> GetEntitiesAsync(long? id, string userName, string normalizedUserName)
+        public async Task<IList<DTO.PersonOutput>> GetEntitiesAsync(long? id = null, string userName = null, 
+            string normalizedUserName = null)
         {
             var people = await PersonRepository.GetEntitiesAsync(id, userName, normalizedUserName);
-            return Mapper.Map<IList<DTO.Person>>(people);
+            return Mapper.Map<IList<DTO.PersonOutput>>(people);
         }
     }
 }

@@ -20,7 +20,7 @@ namespace FarmerzonAddress.Controllers
         {
             AddressManager = addressManager;
         }
-        
+
         /// <summary>
         /// Request a list of addresses.
         /// </summary>
@@ -35,14 +35,14 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">One or more optional parameters were not valid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(DTO.ListResponse<DTO.Address>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.AddressOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAddressesAsync([FromQuery]long? addressId, [FromQuery]string doorNumber,
             [FromQuery]string street)
         {
             var addresses = await AddressManager.GetEntitiesAsync(addressId, doorNumber, street);
-            return Ok(new DTO.ListResponse<DTO.Address>
+            return Ok(new DTO.SuccessResponse<IList<DTO.AddressOutput>>
             {
                 Success = true,
                 Content = addresses
@@ -60,14 +60,15 @@ namespace FarmerzonAddress.Controllers
         /// <response code="200">Query was able to execute.</response>
         /// <response code="400">Article ids were invalid.</response>
         /// <response code="500">Something unexpected happened.</response>
-        [HttpGet("get-by-city-id")]
-        [ProducesResponseType(typeof(DTO.DictionaryResponse<IList<DTO.Address>>), StatusCodes.Status200OK)]
+        [HttpGet("by-city-id")]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
+            StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAddressesByCityIdAsync([FromQuery]IEnumerable<long> cityIds)
         {
             var addresses = await AddressManager.GetAddressesByCityIdAsync(cityIds);
-            return Ok(new DTO.DictionaryResponse<IList<DTO.Address>>
+            return Ok(new DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>
             {
                 Success = true,
                 Content = addresses
@@ -85,14 +86,15 @@ namespace FarmerzonAddress.Controllers
         /// <response code="200">Query was able to execute.</response>
         /// <response code="400">Article ids were invalid.</response>
         /// <response code="500">Something unexpected happened.</response>
-        [HttpGet("get-by-country-id")]
-        [ProducesResponseType(typeof(DTO.DictionaryResponse<IList<DTO.Address>>), StatusCodes.Status200OK)]
+        [HttpGet("by-country-id")]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
+            StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressesByCountryIdAsync([FromQuery]IEnumerable<long> countryIds)
+        public async Task<IActionResult> GetAddressesByCountryIdAsync([FromQuery] IEnumerable<long> countryIds)
         {
             var addresses = await AddressManager.GetAddressesByCountryIdAsync(countryIds);
-            return Ok(new DTO.DictionaryResponse<IList<DTO.Address>>
+            return Ok(new DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>
             {
                 Success = true,
                 Content = addresses
@@ -110,14 +112,15 @@ namespace FarmerzonAddress.Controllers
         /// <response code="200">Query was able to execute.</response>
         /// <response code="400">Article ids were invalid.</response>
         /// <response code="500">Something unexpected happened.</response>
-        [HttpGet("get-by-state-id")]
-        [ProducesResponseType(typeof(DTO.DictionaryResponse<IList<DTO.Address>>), StatusCodes.Status200OK)]
+        [HttpGet("by-state-id")]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
+            StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressesByStateIdAsync([FromQuery]IEnumerable<long> stateIds)
+        public async Task<IActionResult> GetAddressesByStateIdAsync([FromQuery] IEnumerable<long> stateIds)
         {
             var addresses = await AddressManager.GetAddressesByStateIdAsync(stateIds);
-            return Ok(new DTO.DictionaryResponse<IList<DTO.Address>>
+            return Ok(new DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>
             {
                 Success = true,
                 Content = addresses
@@ -135,14 +138,15 @@ namespace FarmerzonAddress.Controllers
         /// <response code="200">Query was able to execute.</response>
         /// <response code="400">Article ids were invalid.</response>
         /// <response code="500">Something unexpected happened.</response>
-        [HttpGet("get-by-normalized-user-name")]
-        [ProducesResponseType(typeof(DTO.DictionaryResponse<DTO.Address>), StatusCodes.Status200OK)]
+        [HttpGet("by-normalized-user-name")]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.AddressOutput>>), 
+            StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressesByStateIdAsync([FromQuery]IEnumerable<string> normalizedUserNames)
+        public async Task<IActionResult> GetAddressesByStateIdAsync([FromQuery] IEnumerable<string> normalizedUserNames)
         {
             var addresses = await AddressManager.GetAddressesByNormalizedUserNamesAsync(normalizedUserNames);
-            return Ok(new DTO.DictionaryResponse<DTO.Address>
+            return Ok(new DTO.SuccessResponse<IDictionary<string, DTO.AddressOutput>>
             {
                 Success = true,
                 Content = addresses

@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
+using System.Text.Json;
 using AutoMapper;
 using FarmerzonAddress.Helper;
 using FarmerzonAddressDataAccess;
@@ -14,7 +15,6 @@ using FarmerzonAddressManager.Mapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -32,23 +32,20 @@ namespace FarmerzonAddress
             Configuration = configuration;
         }
 
-        readonly string allowOrigins = "allowOrigins";
-        
         public IConfiguration Configuration { get; }
         
         // This method gets called by the runtime. Use this method to add services to the container.
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors(c => 
-            {
-                c.AddPolicy(allowOrigins,
-                    options =>
-                    {
-                        options.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod();
-                    });
-            });
+            services.AddControllers().AddDapr();
             
+            services.AddSingleton(new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                PropertyNameCaseInsensitive = true
+            });
+
             // Disable default model validation like it is described under the following link
             // https://www.talkingdotnet.com/disable-automatic-model-state-validation-in-asp-net-core-2-1/
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
@@ -161,7 +158,7 @@ namespace FarmerzonAddress
             }
 
             app.UseRouting();
-            app.UseCors(allowOrigins);
+            app.UseCloudEvents();
 
             // It is important to use app.UseAuthentication(); before app.UseAuthorization();
             // Otherwise authentication with json web tokens doesn't work.
@@ -170,9 +167,8 @@ namespace FarmerzonAddress
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllerRoute(
-                    name: "default",
-                    pattern: "{controller}/{action=Index}/{id?}");
+                endpoints.MapSubscribeHandler();
+                endpoints.MapControllers();
             });
             
             context.Database.Migrate();

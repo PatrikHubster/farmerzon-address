@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmerzonAddressDataAccess.Implementation
 {
-    public class StateRepository : AbstractRepository, IStateRepository
+    public class StateRepository : AbstractRepository<State>, IStateRepository
     {
         public StateRepository(FarmerzonAddressContext context) : base(context)
         {
             // nothing to do here
         }
 
-        public async Task<IList<State>> GetEntitiesAsync(long? id, string name)
+        public async Task<IList<State>> GetEntitiesAsync(long? id = null, string name = null)
         {
             return await Context.States
                 .Where(s => id == null || s.StateId == id)
@@ -28,6 +28,16 @@ namespace FarmerzonAddressDataAccess.Implementation
                 .IncludeMany(includes)
                 .Where(s => ids.Contains(s.StateId))
                 .ToListAsync();
+        }
+
+        public Task<State> UpdateEntityAsync(long id, State entity)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<State> DeleteEntityAsync(long id)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

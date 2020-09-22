@@ -7,14 +7,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmerzonAddressDataAccess.Implementation
 {
-    public class CountryRepository : AbstractRepository, ICountryRepository
+    public class CountryRepository : AbstractRepository<Country>, ICountryRepository
     {
         public CountryRepository(FarmerzonAddressContext context) : base(context)
         {
             // nothing to do here
         }
 
-        public async Task<IList<Country>> GetEntitiesAsync(long? id, string name, string code)
+        public async Task<IList<Country>> GetEntitiesAsync(long? id = null, string name = null, string code = null)
         {
             return await Context.Countries
                 .Where(c => id == null || c.CountryId == id)
@@ -29,6 +29,16 @@ namespace FarmerzonAddressDataAccess.Implementation
                 .IncludeMany(includes)
                 .Where(c => ids.Contains(c.CountryId))
                 .ToListAsync();
+        }
+
+        public Task<Country> UpdateEntityAsync(long id, Country entity)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public Task<Country> DeleteEntityAsync(long id)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

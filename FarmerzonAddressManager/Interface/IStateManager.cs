@@ -7,7 +7,7 @@ namespace FarmerzonAddressManager.Interface
 {
     public interface IStateManager
     {
-        public Task<IList<DTO.State>> GetEntitiesAsync(long? id, string name);
-        public Task<IDictionary<string, DTO.State>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids);
+        public Task<IList<DTO.StateOutput>> GetEntitiesAsync(long? id = null, string name = null);
+        public Task<IDictionary<string, DTO.StateOutput>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids);
     }
 }

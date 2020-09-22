@@ -1,6 +1,6 @@
 namespace FarmerzonAddressDataTransferModel
 {
-    public class Person
+    public class PersonOutput
     {
         // primary key
         public long PersonId { get; set; }

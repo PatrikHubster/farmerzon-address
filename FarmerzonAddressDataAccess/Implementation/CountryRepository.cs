@@ -35,10 +35,21 @@ namespace FarmerzonAddressDataAccess.Implementation
         {
             throw new System.NotImplementedException();
         }
-
-        public Task<Country> DeleteEntityAsync(long id)
+        
+        public async Task<bool> ExistingRelationshipsForCountry(long id)
         {
-            throw new System.NotImplementedException();
+            var country = await Context.Countries
+                .Include("Addresses")
+                .SingleOrDefaultAsync(c => c.CountryId == id);
+            return country?.Addresses != null && country.Addresses.Count != 0;
+        }
+
+        public async Task<Country> DeleteEntityAsync(long id)
+        {
+            var country = await Context.Countries.SingleOrDefaultAsync(c => c.CountryId == id);
+            Context.Countries.Remove(country);
+            await Context.SaveChangesAsync();
+            return country;
         }
     }
 }

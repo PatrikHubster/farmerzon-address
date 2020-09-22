@@ -18,6 +18,7 @@ namespace FarmerzonAddressManager.Mapper
 
             // Country
             CreateMap<DAO.Country, DTO.CountryOutput>();
+            CreateMap<DTO.CountryInput, DAO.Country>();
 
             // Person
             CreateMap<DAO.Person, DTO.PersonOutput>();

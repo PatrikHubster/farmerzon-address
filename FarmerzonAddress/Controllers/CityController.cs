@@ -22,7 +22,7 @@ namespace FarmerzonAddress.Controllers
         }
 
         /// <summary>
-        /// Insert a city.
+        /// Inserts a city.
         /// </summary>
         /// <param name="city">The city which should be inserted into the system.</param>
         /// <returns>

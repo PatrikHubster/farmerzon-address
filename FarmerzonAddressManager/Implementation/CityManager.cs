@@ -46,14 +46,6 @@ namespace FarmerzonAddressManager.Implementation
             return Mapper.Map<DTO.CityOutput>(insertedCity);
         }
 
-        public async Task<DTO.CityOutput> UpdateEntityAsync(long id, DTO.CityInput entity)
-        {
-            await ThrowInCaseOfMissingCity(id);
-            var convertedCity = Mapper.Map<DAO.City>(entity);
-            var updatedCity = await CityRepository.UpdateEntityAsync(id, convertedCity);
-            return Mapper.Map<DTO.CityOutput>(updatedCity);
-        }
-
         public async Task<IList<DTO.CityOutput>> GetEntitiesAsync(long? id = null, string zipCode = null, 
             string name = null)
         {
@@ -67,6 +59,14 @@ namespace FarmerzonAddressManager.Implementation
                 await AddressRepository.GetEntitiesByIdAsync(ids, new List<string> {nameof(DAO.Address.City)});
             return addresses.ToDictionary(key => key.AddressId.ToString(),
                 value => Mapper.Map<DTO.CityOutput>(value.City));
+        }
+        
+        public async Task<DTO.CityOutput> UpdateEntityAsync(long id, DTO.CityInput entity)
+        {
+            await ThrowInCaseOfMissingCity(id);
+            var convertedCity = Mapper.Map<DAO.City>(entity);
+            var updatedCity = await CityRepository.UpdateEntityAsync(id, convertedCity);
+            return Mapper.Map<DTO.CityOutput>(updatedCity);
         }
         
         public async Task<DTO.CityOutput> DeleteEntityAsync(long id)

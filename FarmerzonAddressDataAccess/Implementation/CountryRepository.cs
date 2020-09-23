@@ -31,12 +31,16 @@ namespace FarmerzonAddressDataAccess.Implementation
                 .ToListAsync();
         }
 
-        public Task<Country> UpdateEntityAsync(long id, Country entity)
+        public async Task<Country> UpdateEntityAsync(long id, Country entity)
         {
-            throw new System.NotImplementedException();
+            var country = await Context.Countries.SingleOrDefaultAsync(c => c.CountryId == id);
+            country.Code = entity.Code;
+            country.Name = entity.Name;
+            await Context.SaveChangesAsync();
+            return country;
         }
         
-        public async Task<bool> ExistingRelationshipsForCountry(long id)
+        public async Task<bool> ExistingRelationshipsForCountryAsync(long id)
         {
             var country = await Context.Countries
                 .Include("Addresses")

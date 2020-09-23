@@ -8,6 +8,6 @@ namespace FarmerzonAddressDataAccess.Interface
     {
         public Task<IList<Country>> GetEntitiesAsync(long? id = null, string name = null, string code = null);
         public Task<IList<Country>> GetEntitiesByIdAsync(IEnumerable<long> ids, IEnumerable<string> includes);
-        public Task<bool> ExistingRelationshipsForCountry(long id);
+        public Task<bool> ExistingRelationshipsForCountryAsync(long id);
     }
 }

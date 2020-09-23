@@ -30,14 +30,28 @@ namespace FarmerzonAddressDataAccess.Implementation
                 .ToListAsync();
         }
 
-        public Task<State> UpdateEntityAsync(long id, State entity)
+        public async Task<State> UpdateEntityAsync(long id, State entity)
         {
-            throw new System.NotImplementedException();
+            var state = await Context.States.SingleOrDefaultAsync(s => s.StateId == id);
+            state.Name = entity.Name;
+            await Context.SaveChangesAsync();
+            return state;
+        }
+        
+        public async Task<bool> ExistingRelationshipsForStateAsync(long id)
+        {
+            var state = await Context.States
+                .Include("Addresses")
+                .SingleOrDefaultAsync(s => s.StateId == id);
+            return state?.Addresses != null && state.Addresses.Count != 0;
         }
 
-        public Task<State> DeleteEntityAsync(long id)
+        public async Task<State> DeleteEntityAsync(long id)
         {
-            throw new System.NotImplementedException();
+            var state = await Context.States.SingleOrDefaultAsync(s => s.StateId == id);
+            Context.States.Remove(state);
+            await Context.SaveChangesAsync();
+            return state;
         }
     }
 }

@@ -8,5 +8,6 @@ namespace FarmerzonAddressDataAccess.Interface
     {
         public Task<IList<State>> GetEntitiesAsync(long? id = null, string name = null);
         public Task<IList<State>> GetEntitiesByIdAsync(IEnumerable<long> ids, IEnumerable<string> includes);
+        public Task<bool> ExistingRelationshipsForStateAsync(long id);
     }
 }

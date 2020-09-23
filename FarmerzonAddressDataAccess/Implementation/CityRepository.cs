@@ -40,7 +40,7 @@ namespace FarmerzonAddressDataAccess.Implementation
             return city;
         }
 
-        public async Task<bool> ExistingRelationshipsForCity(long id)
+        public async Task<bool> ExistingRelationshipsForCityAsync(long id)
         {
             var city = await Context.Cities
                 .Include("Addresses")

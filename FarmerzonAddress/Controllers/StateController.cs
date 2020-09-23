@@ -20,6 +20,31 @@ namespace FarmerzonAddress.Controllers
         {
             StateManager = stateManager;
         }
+
+        /// <summary>
+        /// Inserts a state.
+        /// </summary>
+        /// <param name="state">The state which should be inserted into the system.</param>
+        /// <returns>
+        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
+        /// something went wrong.
+        /// </returns>
+        /// <response code="200">Insertion was able to execute.</response>
+        /// <response code="400">One or more optional parameters were not valid.</response>
+        /// <response code="500">Something unexpected happened.</response>
+        [HttpPost]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.StateOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PostStateAsync([FromBody] DTO.StateInput state)
+        {
+            var insertedState = await StateManager.InsertEntityAsync(state);
+            return Ok(new DTO.SuccessResponse<DTO.StateOutput>
+            {
+                Success = true,
+                Content = insertedState
+            });
+        }
         
         /// <summary>
         /// Request a list of states.
@@ -69,6 +94,57 @@ namespace FarmerzonAddress.Controllers
             {
                 Success = true,
                 Content = states
+            });
+        }
+        
+        /// <summary>
+        /// Updates a state.
+        /// </summary>
+        /// <param name="stateId">The id of the country to update.</param>
+        /// <param name="state">The state which should be inserted into the system.</param>
+        /// <returns>
+        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
+        /// something went wrong.
+        /// </returns>
+        /// <response code="200">Update was able to execute.</response>
+        /// <response code="400">One or more optional parameters were not valid.</response>
+        /// <response code="500">Something unexpected happened.</response>
+        [HttpPut]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.StateOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> PutStateAsync([FromQuery] long stateId, [FromBody] DTO.StateInput state)
+        {
+            var updatedState = await StateManager.UpdateEntityAsync(stateId, state);
+            return Ok(new DTO.SuccessResponse<DTO.StateOutput>
+            {
+                Success = true,
+                Content = updatedState
+            });
+        }
+        
+        /// <summary>
+        /// Delete a state.
+        /// </summary>
+        /// <param name="stateId">The id of the state to delete.</param>
+        /// <returns>
+        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
+        /// something went wrong.
+        /// </returns>
+        /// <response code="200">Deletion was able to execute.</response>
+        /// <response code="400">One or more optional parameters were not valid.</response>
+        /// <response code="500">Something unexpected happened.</response>
+        [HttpDelete]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.StateOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DeleteStateAsync([FromQuery] long stateId)
+        {
+            var deletedState = await StateManager.DeleteEntityAsync(stateId);
+            return Ok(new DTO.SuccessResponse<DTO.StateOutput>
+            {
+                Success = true,
+                Content = deletedState
             });
         }
     }

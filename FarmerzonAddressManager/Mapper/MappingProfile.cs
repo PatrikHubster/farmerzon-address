@@ -25,6 +25,7 @@ namespace FarmerzonAddressManager.Mapper
 
             // State
             CreateMap<DAO.State, DTO.StateOutput>();
+            CreateMap<DTO.StateInput, DAO.State>();
         }
     }
 }

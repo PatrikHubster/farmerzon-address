@@ -72,7 +72,7 @@ namespace FarmerzonAddressManager.Implementation
         public async Task<DTO.CountryOutput> DeleteEntityAsync(long id)
         {
             await ThrowInCaseOfMissingCountry(id);
-            var existingRelationshipsForCountry = await CountryRepository.ExistingRelationshipsForCountry(id);
+            var existingRelationshipsForCountry = await CountryRepository.ExistingRelationshipsForCountryAsync(id);
             if (existingRelationshipsForCountry)
             {
                 throw new BadRequestException($"The country with the id {id} can't be deleted because it " +

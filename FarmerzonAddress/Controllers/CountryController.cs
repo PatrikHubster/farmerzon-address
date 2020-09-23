@@ -24,7 +24,7 @@ namespace FarmerzonAddress.Controllers
         /// <summary>
         /// Inserts a country.
         /// </summary>
-        /// <param name="country">Optional parameter for querying for countries.</param>
+        /// <param name="country">The country which should be inserted into the system.</param>
         /// <returns>
         /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
         /// something went wrong.

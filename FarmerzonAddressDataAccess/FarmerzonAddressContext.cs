@@ -10,6 +10,37 @@ namespace FarmerzonAddressDataAccess
             // nothing to do here
         }
 
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            // City
+            builder.Entity<City>()
+                .HasIndex(c => new {c.Name, c.ZipCode})
+                .IsUnique();
+
+            // Country
+            builder.Entity<Country>()
+                .HasIndex(c => c.Code)
+                .IsUnique();
+
+            builder.Entity<Country>()
+                .HasIndex(c => c.Name)
+                .IsUnique();
+
+            // Person
+            builder.Entity<Person>()
+                .HasIndex(p => p.NormalizedUserName)
+                .IsUnique();
+
+            builder.Entity<Person>()
+                .HasIndex(p => p.UserName)
+                .IsUnique();
+
+            // State
+            builder.Entity<State>()
+                .HasIndex(s => s.Name)
+                .IsUnique();
+        }
+
         public DbSet<Address> Addresses { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<Country> Countries { get; set; }

@@ -7,12 +7,18 @@ namespace FarmerzonAddressManager.Interface
 {
     public interface IAddressManager
     {
-        public Task<IList<DTO.AddressOutput>> GetEntitiesAsync(long? id = null, string doorNumber = null, 
+        public Task<DTO.AddressOutput> InsertEntityAsync(DTO.AddressInput entity, string userName,
+            string normalizedUserName);
+        public Task<IEnumerable<DTO.AddressOutput>> GetEntitiesAsync(long? id = null, string doorNumber = null,
             string street = null);
-        public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetAddressesByCityIdAsync(IEnumerable<long> ids);
-        public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetAddressesByCountryIdAsync(IEnumerable<long> ids);
-        public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetAddressesByStateIdAsync(IEnumerable<long> ids);
-        public Task<IDictionary<string, DTO.AddressOutput>> GetAddressesByNormalizedUserNamesAsync(
+        public Task<DTO.AddressOutput> UpdateEntityAsync(long id, DTO.AddressInput address, string userName,
+            string normalizedUserName);
+        public Task<DTO.AddressOutput> DeleteEntityByIdAsync(long id, string userName, string normalizedUserName);
+        
+        public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByCityIdAsync(IEnumerable<long> ids);
+        public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByCountryIdAsync(IEnumerable<long> ids);
+        public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByStateIdAsync(IEnumerable<long> ids);
+        public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByNormalizedUserNamesAsync(
             IEnumerable<string> normalizedUserNames);
     }
 }

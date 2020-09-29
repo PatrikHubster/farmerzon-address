@@ -6,6 +6,7 @@
 
     <ItemGroup>
       <ProjectReference Include="..\FarmerzonAddressDataAccessModel\FarmerzonAddressDataAccessModel.csproj" />
+      <ProjectReference Include="..\FarmerzonAddressErrorHandling\FarmerzonAddressErrorHandling.csproj" />
     </ItemGroup>
 
     <ItemGroup>

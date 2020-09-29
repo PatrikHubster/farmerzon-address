@@ -1,10 +1,7 @@
 namespace FarmerzonAddressDataTransferModel
 {
-    public class PersonOutput
+    public class PersonOutput : BaseModelOutput
     {
-        // primary key
-        public long PersonId { get; set; }
-        
         // attributes
         public string UserName { get; set; }
         public string NormalizedUserName { get; set; }

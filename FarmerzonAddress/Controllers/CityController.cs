@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using DAO = FarmerzonAddressDataAccessModel;
 using DTO = FarmerzonAddressDataTransferModel;
 
 namespace FarmerzonAddress.Controllers
@@ -60,14 +61,14 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">One or more optional parameters were not valid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.CityOutput>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IEnumerable<DTO.CityOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetCitiesAsync([FromQuery] long? cityId, [FromQuery] string zipCode,
             [FromQuery]string name)
         {
-            var cities = await CityManager.GetEntitiesAsync(cityId, zipCode, name);
-            return Ok(new DTO.SuccessResponse<IList<DTO.CityOutput>>
+            var cities = await CityManager.GetEntitiesAsync(id: cityId, zipCode: zipCode, name: name);
+            return Ok(new DTO.SuccessResponse<IEnumerable<DTO.CityOutput>>
             {
                 Success = true,
                 Content = cities
@@ -142,7 +143,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteCityAsync([FromQuery] long cityId)
         {
-            var deletedCity = await CityManager.DeleteEntityAsync(cityId);
+            var deletedCity = await CityManager.RemoveEntityByIdAsync(cityId);
             return Ok(new DTO.SuccessResponse<DTO.CityOutput>
             {
                 Success = true,

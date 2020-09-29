@@ -11,6 +11,7 @@ namespace FarmerzonAddressManager.Mapper
         {
             // Address
             CreateMap<DAO.Address, DTO.AddressOutput>();
+            CreateMap<DTO.AddressInput, DAO.Address>();
 
             // City
             CreateMap<DAO.City, DTO.CityOutput>();

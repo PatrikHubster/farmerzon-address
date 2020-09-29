@@ -9,6 +9,8 @@ namespace FarmerzonAddressDataTransferModel
         [Required]
         public CountryInput Country { get; set; }
         [Required]
+        public StateInput State { get; set; }
+        [Required]
         public string DoorNumber { get; set; }
         [Required]
         public string Street { get; set; }

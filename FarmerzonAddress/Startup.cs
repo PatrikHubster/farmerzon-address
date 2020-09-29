@@ -57,8 +57,7 @@ namespace FarmerzonAddress
             services.AddDbContext<FarmerzonAddressContext>(
                 option => option.UseNpgsql(
                     Configuration.GetConnectionString("FarmerzonAddress"),
-                    x => x.MigrationsAssembly(nameof(FarmerzonAddress))),
-                ServiceLifetime.Transient);
+                    x => x.MigrationsAssembly(nameof(FarmerzonAddress))));
             
             services.AddAuthentication(options =>
             {
@@ -83,21 +82,22 @@ namespace FarmerzonAddress
             
             // Adds the mapper for the business logic
             services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
-
-            // repositories DI container
-            services.AddTransient<IAddressRepository, AddressRepository>();
-            services.AddTransient<ICityRepository, CityRepository>();
-            services.AddTransient<ICountryRepository, CountryRepository>();
-            services.AddTransient<IPersonRepository, PersonRepository>();
-            services.AddTransient<IStateRepository, StateRepository>();
             
             // manager DI container
-            services.AddTransient<IAddressManager, AddressManager>();
-            services.AddTransient<ICityManager, CityManager>();
-            services.AddTransient<ICountryManager, CountryManager>();
-            services.AddTransient<IPersonManager, PersonManager>();
-            services.AddTransient<IStateManager, StateManager>();
+            services.AddScoped<IAddressManager, AddressManager>();
+            services.AddScoped<ICityManager, CityManager>();
+            services.AddScoped<ICountryManager, CountryManager>();
+            services.AddScoped<IPersonManager, PersonManager>();
+            services.AddScoped<IStateManager, StateManager>();
             
+            // repositories DI container
+            services.AddScoped<ITransactionHandler, TransactionHandler>();
+            services.AddScoped<IAddressRepository, AddressRepository>();
+            services.AddScoped<ICityRepository, CityRepository>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<IPersonRepository, PersonRepository>();
+            services.AddScoped<IStateRepository, StateRepository>();
+
             // Register the Swagger generator, defining 1 or more Swagger documents
             services.AddSwaggerGen(c =>
             {

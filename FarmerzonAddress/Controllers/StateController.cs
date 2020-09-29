@@ -1,10 +1,13 @@
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 using FarmerzonAddressManager.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using DAO = FarmerzonAddressDataAccessModel;
 using DTO = FarmerzonAddressDataTransferModel;
 
 namespace FarmerzonAddress.Controllers
@@ -59,13 +62,13 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">One or more optional parameters were not valid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.StateOutput>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IEnumerable<DTO.StateOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetStatesAsync([FromQuery] long? stateId, [FromQuery] string name)
         {
-            var states = await StateManager.GetEntitiesAsync(stateId, name);
-            return Ok(new DTO.SuccessResponse<IList<DTO.StateOutput>>
+            var states = await StateManager.GetEntitiesAsync(id: stateId, name: name);
+            return Ok(new DTO.SuccessResponse<IEnumerable<DTO.StateOutput>>
             {
                 Success = true,
                 Content = states
@@ -84,7 +87,8 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">Article ids were invalid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet("get-by-address-id")]
-        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.StateOutput>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.StateOutput>>), 
+            StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetStatesByAddressIdAsync([FromQuery] IEnumerable<long> addressIds)
@@ -115,11 +119,11 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> PutStateAsync([FromQuery] long stateId, [FromBody] DTO.StateInput state)
         {
-            var updatedState = await StateManager.UpdateEntityAsync(stateId, state);
+            var insertedState = await StateManager.UpdateEntityAsync(stateId, state);
             return Ok(new DTO.SuccessResponse<DTO.StateOutput>
             {
                 Success = true,
-                Content = updatedState
+                Content = insertedState
             });
         }
         
@@ -140,7 +144,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteStateAsync([FromQuery] long stateId)
         {
-            var deletedState = await StateManager.DeleteEntityAsync(stateId);
+            var deletedState = await StateManager.RemoveEntityByIdAsync(stateId);
             return Ok(new DTO.SuccessResponse<DTO.StateOutput>
             {
                 Success = true,

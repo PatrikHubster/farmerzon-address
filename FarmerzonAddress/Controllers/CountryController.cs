@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using DAO = FarmerzonAddressDataAccessModel;
 using DTO = FarmerzonAddressDataTransferModel;
 
 namespace FarmerzonAddress.Controllers
@@ -60,14 +61,14 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">One or more optional parameters were not valid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(DTO.SuccessResponse<IList<DTO.CountryOutput>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IEnumerable<DTO.CountryOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCountriesAsync([FromQuery] long? countryId, [FromQuery] string name,
-            [FromQuery] string code)
+        public async Task<IActionResult> GetCountriesAsync([FromQuery] long? countryId, [FromQuery] string code, 
+            [FromQuery] string name)
         {
-            var countries = await CountryManager.GetEntitiesAsync(countryId, name, code);
-            return Ok(new DTO.SuccessResponse<IList<DTO.CountryOutput>>
+            var countries = await CountryManager.GetEntitiesAsync(id: countryId, code: code, name: name);
+            return Ok(new DTO.SuccessResponse<IEnumerable<DTO.CountryOutput>>
             {
                 Success = true,
                 Content = countries
@@ -143,7 +144,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> DeleteCountryAsync([FromQuery] long countryId)
         {
-            var deletedCountry = await CountryManager.DeleteEntityAsync(countryId);
+            var deletedCountry = await CountryManager.RemoveEntityByIdAsync(countryId);
             return Ok(new DTO.SuccessResponse<DTO.CountryOutput>
             {
                 Success = true,

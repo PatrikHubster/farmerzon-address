@@ -1,10 +1,7 @@
 namespace FarmerzonAddressDataTransferModel
 {
-    public class StateOutput
+    public class StateOutput : BaseModelOutput
     {
-        // primary key
-        public long StateId { get; set; }
-        
         // attributes
         public string Name { get; set; }
     }

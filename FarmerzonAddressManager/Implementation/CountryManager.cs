@@ -1,9 +1,7 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FarmerzonAddressDataAccess.Interface;
-using FarmerzonAddressErrorHandling.CustomException;
 using FarmerzonAddressManager.Interface;
 
 using DAO = FarmerzonAddressDataAccessModel;
@@ -13,73 +11,103 @@ namespace FarmerzonAddressManager.Implementation
 {
     public class CountryManager : AbstractManager, ICountryManager
     {
-        private IAddressRepository AddressRepository { get; set; }
         private ICountryRepository CountryRepository { get; set; }
-
-        public CountryManager(IMapper mapper, IAddressRepository addressRepository, 
-            ICountryRepository countryRepository) : base(mapper)
-        {
-            AddressRepository = addressRepository;
-            CountryRepository = countryRepository;
-        }
         
-        private async Task ThrowInCaseOfMissingCountry(long countryId)
+        public CountryManager(ITransactionHandler transactionHandler, IMapper mapper, 
+            ICountryRepository countryRepository) : base(transactionHandler, mapper)
         {
-            var existingCountries = await GetEntitiesAsync(id: countryId);
-            if (existingCountries == null || existingCountries.Count != 1)
-            {
-                throw new BadRequestException($"A country with the id {countryId} does not exist.");
-            }
+            CountryRepository = countryRepository;
         }
         
         public async Task<DTO.CountryOutput> InsertEntityAsync(DTO.CountryInput entity)
         {
-            var existingCountries = await GetEntitiesAsync(code: entity.Code, name: entity.Name);
-            if (existingCountries != null && existingCountries.Count > 0)
+            await TransactionHandler.BeginTransactionAsync();
+            try
             {
-                throw new BadRequestException($"A country with the code {entity.Code} and the " + 
-                                              $"name {entity.Name} already exists.");
+                var convertedCountry = Mapper.Map<DAO.Country>(entity);
+                var insertedCountry = await CountryRepository.InsertEntityAsync(convertedCountry);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.CountryOutput>(insertedCountry);
             }
-            
-            var convertedCountry = Mapper.Map<DAO.Country>(entity);
-            var insertedCountry = await CountryRepository.InsertEntityAsync(convertedCountry);
-            return Mapper.Map<DTO.CountryOutput>(insertedCountry);
-        }
-
-        public async Task<IList<DTO.CountryOutput>> GetEntitiesAsync(long? id = null, string name = null, 
-            string code = null)
-        {
-            var countries = await CountryRepository.GetEntitiesAsync(id, name, code);
-            return Mapper.Map<IList<DTO.CountryOutput>>(countries);
-        }
-
-        public async Task<IDictionary<string, DTO.CountryOutput>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids)
-        {
-            var addresses = await AddressRepository.GetEntitiesByIdAsync(ids, 
-                new List<string> {nameof(DAO.Address.Country)});
-            return addresses.ToDictionary(key => key.AddressId.ToString(),
-                value => Mapper.Map<DTO.CountryOutput>(value.Country));
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
         }
 
         public async Task<DTO.CountryOutput> UpdateEntityAsync(long id, DTO.CountryInput entity)
         {
-            await ThrowInCaseOfMissingCountry(id);
-            var convertedCountry = Mapper.Map<DAO.Country>(entity);
-            var updatedCountry = await CountryRepository.UpdateEntityAsync(id, convertedCountry);
-            return Mapper.Map<DTO.CountryOutput>(updatedCountry);
+            await TransactionHandler.BeginTransactionAsync();
+            try
+            {
+                var convertedCountry = Mapper.Map<DAO.Country>(entity);
+                convertedCountry.Id = id;
+
+                await CountryRepository.UpdateEntityAsync(convertedCountry);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.CountryOutput>(convertedCountry);
+            }
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
         }
 
-        public async Task<DTO.CountryOutput> DeleteEntityAsync(long id)
+        public async Task<DTO.CountryOutput> RemoveEntityByIdAsync(long id)
         {
-            await ThrowInCaseOfMissingCountry(id);
-            var existingRelationshipsForCountry = await CountryRepository.ExistingRelationshipsForCountryAsync(id);
-            if (existingRelationshipsForCountry)
+            await TransactionHandler.BeginTransactionAsync();
+            try
             {
-                throw new BadRequestException($"The country with the id {id} can't be deleted because it " +
-                                              "is used by other entries.");
+                var deletedCountry = await CountryRepository.RemoveEntityByIdAsync(id);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.CountryOutput>(deletedCountry);
             }
-            var deletedCountry = await CountryRepository.DeleteEntityAsync(id);
-            return Mapper.Map<DTO.CountryOutput>(deletedCountry);
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
+        }
+
+        public async Task<IEnumerable<DTO.CountryOutput>> GetEntitiesByIdAsync(IEnumerable<long> ids)
+        {
+            var foundCountries = await CountryRepository.GetEntitiesByIdAsync(ids);
+            return Mapper.Map<IEnumerable<DTO.CountryOutput>>(foundCountries);
+        }
+
+        public async Task<DTO.CountryOutput> GetEntityByIdAsync(long id)
+        {
+            var foundCountry = await CountryRepository.GetEntityByIdAsync(id);
+            return Mapper.Map<DTO.CountryOutput>(foundCountry);
+        }
+
+        public async Task<IEnumerable<DTO.CountryOutput>> GetEntitiesAsync(long? id = null, string code = null, 
+            string name = null)
+        {
+            var foundCountries = await CountryRepository.GetEntitiesAsync(
+                filter: c => (id == null || c.Id == id) && (code == null || c.Code == code) &&
+                             (name == null || c.Name == name));
+            return Mapper.Map<IEnumerable<DTO.CountryOutput>>(foundCountries);
+        }
+
+        public async Task<IDictionary<string, DTO.CountryOutput>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids)
+        {
+            var foundCountries = await CountryRepository.GetEntitiesByAddressIdAsync(ids);
+            return Mapper.Map<IDictionary<string, DTO.CountryOutput>>(foundCountries);
         }
     }
 }

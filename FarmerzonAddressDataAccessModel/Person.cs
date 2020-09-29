@@ -1,12 +1,13 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace FarmerzonAddressDataAccessModel
 {
-    public class Person
+    public class Person : BaseModel
     {
-        // primary key
-        public long PersonId { get; set; }
-
         // relationship
-        public Address Address { get; set; }
+        [ForeignKey("PersonId")]
+        public IList<Address> Addresses { get; set; }
         
         // attributes
         public string UserName { get; set; }

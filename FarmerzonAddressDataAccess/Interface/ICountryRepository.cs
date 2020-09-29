@@ -4,10 +4,8 @@ using FarmerzonAddressDataAccessModel;
 
 namespace FarmerzonAddressDataAccess.Interface
 {
-    public interface ICountryRepository : IAbstractRepository<Country>
+    public interface ICountryRepository : IBasicRepository<Country>
     {
-        public Task<IList<Country>> GetEntitiesAsync(long? id = null, string name = null, string code = null);
-        public Task<IList<Country>> GetEntitiesByIdAsync(IEnumerable<long> ids, IEnumerable<string> includes);
-        public Task<bool> ExistingRelationshipsForCountryAsync(long id);
+        public Task<IDictionary<string, Country>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids);
     }
 }

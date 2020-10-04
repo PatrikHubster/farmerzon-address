@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using FarmerzonAddressDataAccess.Interface;
+using FarmerzonAddressErrorHandling.CustomException;
 using FarmerzonAddressManager.Interface;
 
 using DAO = FarmerzonAddressDataAccessModel;
@@ -45,12 +46,18 @@ namespace FarmerzonAddressManager.Implementation
             await TransactionHandler.BeginTransactionAsync();
             try
             {
-                var convertedCity = Mapper.Map<DAO.City>(entity);
-                convertedCity.Id = id;
+                var foundCity = await CityRepository.GetEntityByIdAsync(id);
+                if (foundCity == null)
+                {
+                    throw new NotFoundException("This city does not exist.");
+                }
+                
+                foundCity.ZipCode = entity.ZipCode;
+                foundCity.Name = entity.Name;
 
-                await CityRepository.UpdateEntityAsync(convertedCity);
+                await CityRepository.UpdateEntityAsync(foundCity);
                 await TransactionHandler.CommitTransactionAsync();
-                return Mapper.Map<DTO.CityOutput>(convertedCity);
+                return Mapper.Map<DTO.CityOutput>(foundCity);
             }
             catch
             {
@@ -68,9 +75,9 @@ namespace FarmerzonAddressManager.Implementation
             await TransactionHandler.BeginTransactionAsync();
             try
             {
-                var deletedCity = await CityRepository.RemoveEntityByIdAsync(id);
+                var removedCity = await CityRepository.RemoveEntityByIdAsync(id);
                 await TransactionHandler.CommitTransactionAsync();
-                return Mapper.Map<DTO.CityOutput>(deletedCity);
+                return Mapper.Map<DTO.CityOutput>(removedCity);
             }
             catch
             {

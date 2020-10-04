@@ -2,52 +2,115 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using FarmerzonAddressDataAccess.Interface;
+using FarmerzonAddressErrorHandling.CustomException;
 using FarmerzonAddressManager.Interface;
 
+using DAO = FarmerzonAddressDataAccessModel;
 using DTO = FarmerzonAddressDataTransferModel;
 
 namespace FarmerzonAddressManager.Implementation
 {
     public class StateManager : AbstractManager, IStateManager
     {
-        public StateManager(ITransactionHandler transactionHandler, IMapper mapper) : base(transactionHandler, mapper)
+        private IStateRepository StateRepository { get; set; }
+
+        public StateManager(ITransactionHandler transactionHandler, IMapper mapper, IStateRepository stateRepository) :
+            base(transactionHandler, mapper)
         {
-            // nothing to do here
-        }
-        
-        public Task<DTO.StateOutput> InsertEntityAsync(DTO.StateInput entity)
-        {
-            throw new System.NotImplementedException();
+            StateRepository = stateRepository;
         }
 
-        public Task<DTO.StateOutput> UpdateEntityAsync(long id, DTO.StateInput entity)
+        public async Task<DTO.StateOutput> InsertEntityAsync(DTO.StateInput entity)
         {
-            throw new System.NotImplementedException();
+            await TransactionHandler.BeginTransactionAsync();
+            try
+            {
+                var convertedState = Mapper.Map<DAO.State>(entity);
+                var insertedState = await StateRepository.InsertEntityAsync(convertedState);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.StateOutput>(insertedState);
+            }
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
         }
 
-        public Task<DTO.StateOutput> RemoveEntityByIdAsync(long id)
+        public async Task<DTO.StateOutput> UpdateEntityAsync(long id, DTO.StateInput entity)
         {
-            throw new System.NotImplementedException();
+            await TransactionHandler.BeginTransactionAsync();
+            try
+            {
+                var foundState = await StateRepository.GetEntityByIdAsync(id);
+                if (foundState == null)
+                {
+                    throw new NotFoundException("This state does not exist.");
+                }
+
+                foundState.Name = entity.Name;
+                await StateRepository.UpdateEntityAsync(foundState);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.StateOutput>(foundState);
+            }
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
         }
 
-        public Task<IEnumerable<DTO.StateOutput>> GetEntitiesByIdAsync(IEnumerable<long> ids)
+        public async Task<DTO.StateOutput> RemoveEntityByIdAsync(long id)
         {
-            throw new System.NotImplementedException();
+            await TransactionHandler.BeginTransactionAsync();
+            try
+            {
+                var removedState = await StateRepository.RemoveEntityByIdAsync(id);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.StateOutput>(removedState);
+            }
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
         }
 
-        public Task<DTO.StateOutput> GetEntityByIdAsync(long id)
+        public async Task<IEnumerable<DTO.StateOutput>> GetEntitiesByIdAsync(IEnumerable<long> ids)
         {
-            throw new System.NotImplementedException();
+            var foundStates = await StateRepository.GetEntitiesByIdAsync(ids);
+            return Mapper.Map<IEnumerable<DTO.StateOutput>>(foundStates);
         }
 
-        public Task<IEnumerable<DTO.StateOutput>> GetEntitiesAsync(long? id = null, string name = null)
+        public async Task<DTO.StateOutput> GetEntityByIdAsync(long id)
         {
-            throw new System.NotImplementedException();
+            var foundState = await StateRepository.GetEntityByIdAsync(id);
+            return Mapper.Map<DTO.StateOutput>(foundState);
         }
 
-        public Task<IDictionary<string, DTO.StateOutput>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids)
+        public async Task<IEnumerable<DTO.StateOutput>> GetEntitiesAsync(long? id = null, string name = null)
         {
-            throw new System.NotImplementedException();
+            var foundStates = await StateRepository.GetEntitiesAsync(
+                s => (id == null || s.Id == id) && (name == null || s.Name == name));
+            return Mapper.Map<IEnumerable<DTO.StateOutput>>(foundStates);
+        }
+
+        public async Task<IDictionary<string, DTO.StateOutput>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids)
+        {
+            var foundStates = await StateRepository.GetEntitiesByAddressIdAsync(ids);
+            return Mapper.Map<IDictionary<string, DTO.StateOutput>>(foundStates);
         }
     }
 }

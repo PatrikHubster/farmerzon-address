@@ -58,20 +58,7 @@ namespace FarmerzonAddressDataAccess.Implementation
                 throw new BadRequestException(EntityAlreadyExistsError);
             }
 
-            var foundEntity = await GetEntityByIdAsync(entity.Id);
-            if (foundEntity == null)
-            {
-                throw new BadRequestException(EntityNotExistsError);
-            }
-
-            var properties = typeof(T).GetProperties();
-            foreach (var property in properties)
-            {
-                var value = property.GetValue(entity);
-                property.SetValue(foundEntity, value);
-            }
-
-            Context.Set<T>().Update(foundEntity);
+            Context.Set<T>().Update(entity);
             await Context.SaveChangesAsync();
         }
 
@@ -83,7 +70,12 @@ namespace FarmerzonAddressDataAccess.Implementation
                 throw new NotFoundException(EntityNotExistsError);
             }
 
-            var result = Context.Set<T>().Remove(foundEntity);
+            return await RemoveEntityAsync(foundEntity);
+        }
+
+        public virtual async Task<T> RemoveEntityAsync(T entity)
+        {
+            var result = Context.Set<T>().Remove(entity);
 
             await Context.SaveChangesAsync();
             return result.Entity;
@@ -98,11 +90,7 @@ namespace FarmerzonAddressDataAccess.Implementation
                 query = query.Where(filter);
             }
 
-            if (includes != null)
-            {
-                query = query.IncludeMany(includes);
-            }
-
+            query = query.IncludeMany(includes);
             if (orderBy != null)
             {
                 query = orderBy(query);

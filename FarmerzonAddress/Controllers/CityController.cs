@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Dapr;
 using FarmerzonAddressManager.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -33,6 +34,7 @@ namespace FarmerzonAddress.Controllers
         /// <response code="200">Insertion was able to execute.</response>
         /// <response code="400">One or more optional parameters were not valid.</response>
         /// <response code="500">Something unexpected happened.</response>
+        [Topic("pubsub", "city")]
         [HttpPost]
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.CityOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]

@@ -1,6 +1,8 @@
+using FarmerzonAddressDataAccessModel;
+
 namespace FarmerzonAddressDataAccess.Interface
 {
-    public interface IPersonRepository
+    public interface IPersonRepository : IBasicRepository<Person>
     {
         
     }

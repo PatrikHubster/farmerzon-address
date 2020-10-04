@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using FarmerzonAddressDataAccess.Interface;
-using FarmerzonAddressDataTransferModel;
 using FarmerzonAddressManager.Interface;
 
 using DTO = FarmerzonAddressDataTransferModel;
@@ -11,15 +10,21 @@ namespace FarmerzonAddressManager.Implementation
 {
     public class PersonManager : AbstractManager, IPersonManager
     {
-        public PersonManager(ITransactionHandler transactionHandler, IMapper mapper) : base(transactionHandler, mapper)
+        private IPersonRepository PersonRepository { get; set; }
+        
+        public PersonManager(ITransactionHandler transactionHandler, IMapper mapper, 
+            IPersonRepository personRepository) : base(transactionHandler, mapper)
         {
-            // nothing to do here
+            PersonRepository = personRepository;
         }
         
-        public Task<IEnumerable<PersonOutput>> GetEntitiesAsync(long? id = null, string userName = null, 
+        public async Task<IEnumerable<DTO.PersonOutput>> GetEntitiesAsync(long? id = null, string userName = null, 
             string normalizedUserName = null)
         {
-            throw new System.NotImplementedException();
+            var foundPeople = await PersonRepository.GetEntitiesAsync(
+                p => (id == null || p.Id == id) && (userName == null || p.UserName == userName) &&
+                     (normalizedUserName == null || p.NormalizedUserName == normalizedUserName));
+            return Mapper.Map<IEnumerable<DTO.PersonOutput>>(foundPeople);
         }
     }
 }

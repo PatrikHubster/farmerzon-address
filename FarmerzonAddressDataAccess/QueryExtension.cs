@@ -1,7 +1,5 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
 
 namespace FarmerzonAddressDataAccess
@@ -19,6 +17,27 @@ namespace FarmerzonAddressDataAccess
             foreach (var include in includes)
             {
                 query = query.Include(include);
+            }
+
+            return query;
+        }
+
+        public static IQueryable<T> IncludeMany<T>(this IQueryable<T> query,
+            IEnumerable<string> includes, string relationship) where T : class
+        {
+            if (relationship == null)
+            {
+                return query.IncludeMany(includes);
+            }
+            
+            if (includes == null)
+            {
+                return query;
+            }
+
+            foreach (var include in includes)
+            {
+                query = query.Include($"{relationship}.{include}");
             }
 
             return query;

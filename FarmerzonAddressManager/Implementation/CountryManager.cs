@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using AutoMapper;
 using FarmerzonAddressDataAccess.Interface;
+using FarmerzonAddressErrorHandling.CustomException;
 using FarmerzonAddressManager.Interface;
 
 using DAO = FarmerzonAddressDataAccessModel;
@@ -45,12 +46,18 @@ namespace FarmerzonAddressManager.Implementation
             await TransactionHandler.BeginTransactionAsync();
             try
             {
-                var convertedCountry = Mapper.Map<DAO.Country>(entity);
-                convertedCountry.Id = id;
+                var foundCountry = await CountryRepository.GetEntityByIdAsync(id);
+                if (foundCountry == null)
+                {
+                    throw new NotFoundException("This country does not exist.");
+                }
 
-                await CountryRepository.UpdateEntityAsync(convertedCountry);
+                foundCountry.Code = entity.Code;
+                foundCountry.Name = entity.Name;
+
+                await CountryRepository.UpdateEntityAsync(foundCountry);
                 await TransactionHandler.CommitTransactionAsync();
-                return Mapper.Map<DTO.CountryOutput>(convertedCountry);
+                return Mapper.Map<DTO.CountryOutput>(foundCountry);
             }
             catch
             {
@@ -68,9 +75,9 @@ namespace FarmerzonAddressManager.Implementation
             await TransactionHandler.BeginTransactionAsync();
             try
             {
-                var deletedCountry = await CountryRepository.RemoveEntityByIdAsync(id);
+                var removedCountry = await CountryRepository.RemoveEntityByIdAsync(id);
                 await TransactionHandler.CommitTransactionAsync();
-                return Mapper.Map<DTO.CountryOutput>(deletedCountry);
+                return Mapper.Map<DTO.CountryOutput>(removedCountry);
             }
             catch
             {

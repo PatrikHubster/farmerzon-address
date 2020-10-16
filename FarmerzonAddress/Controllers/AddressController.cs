@@ -43,8 +43,7 @@ namespace FarmerzonAddress.Controllers
             var userName = User.FindFirst("userName")?.Value;
             var normalizedUserName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
-            var insertedAddress = 
-                await AddressManager.InsertEntityAsync(address, userName, normalizedUserName);
+            var insertedAddress = await AddressManager.InsertEntityAsync(address, userName, normalizedUserName);
             return Ok(new DTO.SuccessResponse<DTO.AddressOutput>
             {
                 Success = true,
@@ -206,7 +205,7 @@ namespace FarmerzonAddress.Controllers
             var userName = User.FindFirst("userName")?.Value;
             var normalizedUserName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var updatedAddress =
+            var updatedAddress = 
                 await AddressManager.UpdateEntityAsync(addressId, address, userName, normalizedUserName);
             return Ok(new DTO.SuccessResponse<DTO.AddressOutput>
             {

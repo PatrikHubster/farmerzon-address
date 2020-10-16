@@ -9,7 +9,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\FarmerzonAddressErrorHandling\FarmerzonAddressErrorHandling.csproj" />
       <ProjectReference Include="..\FarmerzonAddressManager\FarmerzonAddressManager.csproj" />
     </ItemGroup>
 
@@ -17,9 +16,12 @@
       <PackageReference Include="Dapr.AspNetCore" Version="0.10.0-preview01" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.5" />
       <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.5" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
       <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="3.1.4" />
-      <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
+      <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
     </ItemGroup>
 
 </Project>

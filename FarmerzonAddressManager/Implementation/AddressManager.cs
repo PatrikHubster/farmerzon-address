@@ -1,8 +1,8 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using FarmerzonAddressDataAccess.Interface;
+using FarmerzonAddressErrorHandling.CustomException;
 using FarmerzonAddressManager.Interface;
 
 using DAO = FarmerzonAddressDataAccessModel;
@@ -12,99 +12,192 @@ namespace FarmerzonAddressManager.Implementation
 {
     public class AddressManager : AbstractManager, IAddressManager
     {
+        private const string OperationNotAllowed = "This address does not exist or is not accessible for this user.";
+        private static readonly IList<string> Includes = new List<string>
+        {
+            nameof(DAO.Address.City),
+            nameof(DAO.Address.Country),
+            nameof(DAO.Address.State),
+            nameof(DAO.Address.Person)
+        };
         private IAddressRepository AddressRepository { get; set; }
         private ICityRepository CityRepository { get; set; }
         private ICountryRepository CountryRepository { get; set; }
-        private IPersonRepository PersonRepository { get; set; }
         private IStateRepository StateRepository { get; set; }
+        private IPersonRepository PersonRepository { get; set; }
 
-        public AddressManager(IMapper mapper, IAddressRepository addressRepository, ICityRepository cityRepository,
-            ICountryRepository countryRepository, IPersonRepository personRepository, 
-            IStateRepository stateRepository) : base(mapper)
+        public AddressManager(ITransactionHandler transactionHandler, IMapper mapper,
+            IAddressRepository addressRepository, ICityRepository cityRepository, 
+            ICountryRepository countryRepository, IStateRepository stateRepository, 
+            IPersonRepository personRepository) : base(transactionHandler, mapper)
         {
             AddressRepository = addressRepository;
             CityRepository = cityRepository;
             CountryRepository = countryRepository;
-            PersonRepository = personRepository;
             StateRepository = stateRepository;
+            PersonRepository = personRepository;
         }
 
-        public async Task<IList<DTO.Address>> GetEntitiesAsync(long? id, string doorNumber, string street)
+        private async Task<(DAO.City, DAO.Country, DAO.State)> InsertOrGetAddressRelationsAsync(
+            DTO.AddressInput entity)
         {
-            var articles = await AddressRepository.GetEntitiesAsync(id, doorNumber, street);
-            return Mapper.Map<IList<DTO.Address>>(articles);
+            var convertedCity = Mapper.Map<DAO.City>(entity.City);
+            var managedCity = await CityRepository.InsertOrGetEntityAsync(convertedCity);
+
+            var convertedCountry = Mapper.Map<DAO.Country>(entity.Country);
+            var managedCountry = await CountryRepository.InsertOrGetEntityAsync(convertedCountry);
+
+            var convertedState = Mapper.Map<DAO.State>(entity.State);
+            var managedState = await StateRepository.InsertOrGetEntityAsync(convertedState);
+
+            return (managedCity, managedCountry, managedState);
         }
 
-        public async Task<IDictionary<string, IList<DTO.Address>>> GetAddressesByCityIdAsync(IEnumerable<long> ids) 
+        private async Task<DAO.Address> CheckAccessRightsAndGetAddressAsync(long id, string userName, 
+            string normalizedUserName)
         {
-            var cities =
-                await CityRepository.GetEntitiesByIdAsync(ids, new List<string> {nameof(DAO.City.Addresses)});
-
-            var addressesForCities = new Dictionary<string, IList<DTO.Address>>();
-            foreach (var city in cities)
+            var foundAddress = await AddressRepository.GetEntityByIdAsync(id, includes: Includes);
+            
+            if (foundAddress == null)
             {
-                if (!addressesForCities.ContainsKey(city.CityId.ToString()) && city.Addresses.Count > 0)
-                {
-                    addressesForCities.Add(city.CityId.ToString(), new List<DTO.Address>());
-                    foreach (var address in city.Addresses)
-                    {
-                        addressesForCities[city.CityId.ToString()].Add(Mapper.Map<DTO.Address>(address));
-                    }
-                }
+                throw new UnautherizedException(OperationNotAllowed);
             }
 
-            return addressesForCities;
-        }
-        
-        public async Task<IDictionary<string, IList<DTO.Address>>> GetAddressesByCountryIdAsync(IEnumerable<long> ids) 
-        {
-            var countries =
-                await CountryRepository.GetEntitiesByIdAsync(ids, new List<string> {nameof(DAO.Country.Addresses)});
-
-            var addressesForCountries = new Dictionary<string, IList<DTO.Address>>();
-            foreach (var country in countries)
+            if (foundAddress.Person.UserName != userName || 
+                foundAddress.Person.NormalizedUserName != normalizedUserName)
             {
-                if (!addressesForCountries.ContainsKey(country.CountryId.ToString()) && country.Addresses.Count > 0)
-                {
-                    addressesForCountries.Add(country.CountryId.ToString(), new List<DTO.Address>());
-                    foreach (var address in country.Addresses)
-                    {
-                        addressesForCountries[country.CountryId.ToString()].Add(Mapper.Map<DTO.Address>(address));
-                    }
-                }
+                throw new UnautherizedException(OperationNotAllowed);
             }
 
-            return addressesForCountries;
+            return foundAddress;
         }
 
-        public async Task<IDictionary<string, IList<DTO.Address>>> GetAddressesByStateIdAsync(IEnumerable<long> ids)
+        public async Task<DTO.AddressOutput> InsertEntityAsync(DTO.AddressInput entity, string userName,
+            string normalizedUserName)
         {
-            var states =
-                await StateRepository.GetEntitiesByIdAsync(ids, new List<string> {nameof(DAO.State.Addresses)});
-
-            var addressesForStates = new Dictionary<string, IList<DTO.Address>>();
-            foreach (var state in states)
+            await TransactionHandler.BeginTransactionAsync();
+            try
             {
-                if (!addressesForStates.ContainsKey(state.StateId.ToString()) && state.Addresses.Count > 0)
+                var person = new DAO.Person
                 {
-                    addressesForStates.Add(state.StateId.ToString(), new List<DTO.Address>());
-                    foreach (var address in state.Addresses)
-                    {
-                        addressesForStates[state.StateId.ToString()].Add(Mapper.Map<DTO.Address>(address));
-                    }
-                }
-            }
+                    UserName = userName,
+                    NormalizedUserName = normalizedUserName
+                };
+                var managedPerson = await PersonRepository.InsertOrGetEntityAsync(person);
 
-            return addressesForStates;
+                var (city, country, state) = await InsertOrGetAddressRelationsAsync(entity);
+                var address = new DAO.Address
+                {
+                    Person = managedPerson,
+                    City = city,
+                    Country = country,
+                    State = state,
+                    DoorNumber = entity.DoorNumber,
+                    Street = entity.Street
+                };
+                var managedAddress = await AddressRepository.InsertEntityAsync(address);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.AddressOutput>(managedAddress);
+            }
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
         }
 
-        public async Task<IDictionary<string, DTO.Address>> GetAddressesByNormalizedUserNamesAsync(
+        public async Task<DTO.AddressOutput> UpdateEntityAsync(long id, DTO.AddressInput address, string userName,
+            string normalizedUserName)
+        {
+            await TransactionHandler.BeginTransactionAsync();
+            try
+            {
+                var foundAddress = await CheckAccessRightsAndGetAddressAsync(id, userName, normalizedUserName);
+                var (city, country, state) = await InsertOrGetAddressRelationsAsync(address);
+                foundAddress.City = city;
+                foundAddress.Country = country;
+                foundAddress.State = state;
+                foundAddress.DoorNumber = address.DoorNumber;
+                foundAddress.Street = address.Street;
+                await AddressRepository.UpdateEntityAsync(foundAddress);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.AddressOutput>(foundAddress);
+            }
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
+        }
+
+        public async Task<DTO.AddressOutput> DeleteEntityByIdAsync(long id, string userName, string normalizedUserName)
+        {
+            await TransactionHandler.BeginTransactionAsync();
+            try
+            {
+                var foundAddress = await CheckAccessRightsAndGetAddressAsync(id, userName, normalizedUserName);
+                var removedAddress = await AddressRepository.RemoveEntityAsync(foundAddress);
+                await TransactionHandler.CommitTransactionAsync();
+                return Mapper.Map<DTO.AddressOutput>(removedAddress);
+            }
+            catch
+            {
+                await TransactionHandler.RollbackTransactionAsync();
+                throw;
+            }
+            finally
+            {
+                await TransactionHandler.DisposeTransactionAsync();
+            }
+        }
+
+        public async Task<IEnumerable<DTO.AddressOutput>> GetEntitiesAsync(long? id = null, string doorNumber = null,
+            string street = null)
+        {
+            var foundAddresses = await AddressRepository.GetEntitiesAsync(filter:
+                a => (id == null || a.Id == id) && (doorNumber == null || a.DoorNumber == doorNumber) &&
+                     (street == null || a.Street == street), 
+                includes: Includes);
+            return Mapper.Map<IEnumerable<DTO.AddressOutput>>(foundAddresses);
+        }
+
+        public async Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByCityIdAsync(IEnumerable<long> ids)
+        {
+            var foundAddresses = await AddressRepository.GetEntitiesByCityIdAsync(ids, 
+                includes: Includes);
+            return Mapper.Map<IDictionary<string, IList<DTO.AddressOutput>>>(foundAddresses);
+        }
+
+        public async Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByCountryIdAsync(
+            IEnumerable<long> ids)
+        {
+            var foundAddresses = await AddressRepository.GetEntitiesByCountryIdAsync(ids, 
+                includes: Includes);
+            return Mapper.Map<IDictionary<string, IList<DTO.AddressOutput>>>(foundAddresses);
+        }
+
+        public async Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByStateIdAsync(
+            IEnumerable<long> ids)
+        {
+            var foundAddresses = await AddressRepository.GetEntitiesByStateIdAsync(ids, 
+                includes: Includes);
+            return Mapper.Map<IDictionary<string, IList<DTO.AddressOutput>>>(foundAddresses);
+        }
+
+        public async Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByNormalizedUserNamesAsync(
             IEnumerable<string> normalizedUserNames)
         {
-            var people = await PersonRepository.GetEntitiesByNormalizedUserNamesAsync(normalizedUserNames,
-                new List<string> {nameof(DAO.Person.Address)});
-            return people.ToDictionary(key => key.NormalizedUserName,
-                value => Mapper.Map<DTO.Address>(value.Address));
+            var foundAddresses = await AddressRepository.GetEntitiesByNormalizedUserNamesAsync(normalizedUserNames, 
+                includes: Includes);
+            return Mapper.Map<IDictionary<string, IList<DTO.AddressOutput>>>(foundAddresses);
         }
     }
 }

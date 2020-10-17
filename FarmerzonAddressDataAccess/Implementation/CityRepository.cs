@@ -7,28 +7,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmerzonAddressDataAccess.Implementation
 {
-    public class CityRepository : AbstractRepository, ICityRepository
+    public class CityRepository : GenericRepository<City>, ICityRepository
     {
         public CityRepository(FarmerzonAddressContext context) : base(context)
         {
             // nothing to do here
         }
 
-        public async Task<IList<City>> GetEntitiesAsync(long? id, string zipCode, string name)
+        protected override async Task<City> GetEntityAsync(City entity)
         {
             return await Context.Cities
-                .Where(c => id == null || c.CityId == id)
-                .Where(c => zipCode == null || c.ZipCode == zipCode)
-                .Where(c => name == null || c.Name == name)
-                .ToListAsync();
+                .Where(c => c.Name == entity.Name && c.ZipCode == entity.ZipCode)
+                .FirstOrDefaultAsync();
         }
-
-        public async Task<IList<City>> GetEntitiesByIdAsync(IEnumerable<long> ids, IEnumerable<string> includes)
+        
+        public async Task<IDictionary<string, City>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids)
         {
-            return await Context.Cities
-                .IncludeMany(includes)
-                .Where(c => ids.Contains(c.CityId))
-                .ToListAsync();
+            return await Context.Addresses
+                .Where(a => ids.Contains(a.Id))
+                .ToDictionaryAsync(key => key.Id.ToString(), 
+                    value => value.City);
         }
     }
 }

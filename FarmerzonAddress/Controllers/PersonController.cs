@@ -1,9 +1,11 @@
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using FarmerzonAddressManager.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using DAO = FarmerzonAddressDataAccessModel;
 using DTO = FarmerzonAddressDataTransferModel;
 
 namespace FarmerzonAddress.Controllers
@@ -34,14 +36,15 @@ namespace FarmerzonAddress.Controllers
         /// <response code="400">One or more optional parameters were not valid.</response>
         /// <response code="500">Something unexpected happened.</response>
         [HttpGet]
-        [ProducesResponseType(typeof(DTO.ListResponse<DTO.Person>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IEnumerable<DTO.PersonOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesAsync([FromQuery]long? personId, [FromQuery]string userName,
-            [FromQuery]string normalizedUserName)
+        public async Task<IActionResult> GetPeopleAsync([FromQuery] long? personId, [FromQuery] string userName,
+            [FromQuery] string normalizedUserName)
         {
-            var people = await PersonManager.GetEntitiesAsync(personId, userName, normalizedUserName);
-            return Ok(new DTO.ListResponse<DTO.Person>
+            var people = await PersonManager.GetEntitiesAsync(id: personId, userName: userName,
+                normalizedUserName: normalizedUserName);
+            return Ok(new DTO.SuccessResponse<IEnumerable<DTO.PersonOutput>>
             {
                 Success = true,
                 Content = people

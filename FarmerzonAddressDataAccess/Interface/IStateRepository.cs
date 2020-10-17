@@ -4,9 +4,8 @@ using FarmerzonAddressDataAccessModel;
 
 namespace FarmerzonAddressDataAccess.Interface
 {
-    public interface IStateRepository
+    public interface IStateRepository : IBasicRepository<State>
     {
-        public Task<IList<State>> GetEntitiesAsync(long? id, string name);
-        public Task<IList<State>> GetEntitiesByIdAsync(IEnumerable<long> ids, IEnumerable<string> includes);
+        public Task<IDictionary<string, State>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids);
     }
 }

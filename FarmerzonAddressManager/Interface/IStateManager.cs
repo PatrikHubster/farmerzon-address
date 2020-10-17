@@ -5,9 +5,9 @@ using DTO = FarmerzonAddressDataTransferModel;
 
 namespace FarmerzonAddressManager.Interface
 {
-    public interface IStateManager
+    public interface IStateManager : IBasicManager<DTO.StateOutput, DTO.StateInput>
     {
-        public Task<IList<DTO.State>> GetEntitiesAsync(long? id, string name);
-        public Task<IDictionary<string, DTO.State>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids);
+        public Task<IEnumerable<DTO.StateOutput>> GetEntitiesAsync(long? id = null, string name = null);
+        public Task<IDictionary<string, DTO.StateOutput>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids);
     }
 }

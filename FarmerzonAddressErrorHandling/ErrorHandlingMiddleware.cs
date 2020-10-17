@@ -24,13 +24,13 @@ namespace FarmerzonAddressErrorHandling
             {
                 await _next(context);
             }
-            catch (Exception exp)
+            catch (Exception ex)
             {
-                await HandleExceptionAsync(context, exp);
+                await HandleExceptionAsync(context, ex);
             }
         }
 
-        private static Task HandleExceptionAsync(HttpContext context, Exception exp)
+        private static Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
             HttpStatusCode code;
             var resultMessage = new ErrorResponse
@@ -38,7 +38,7 @@ namespace FarmerzonAddressErrorHandling
                 Success = false
             };
 
-            switch (exp)
+            switch (ex)
             {
                 case BadRequestException convertedException:
                     code = HttpStatusCode.BadRequest; // HTTP 400

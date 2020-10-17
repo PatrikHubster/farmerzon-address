@@ -7,28 +7,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace FarmerzonAddressDataAccess.Implementation
 {
-    public class CountryRepository : AbstractRepository, ICountryRepository
+    public class CountryRepository : GenericRepository<Country>, ICountryRepository
     {
         public CountryRepository(FarmerzonAddressContext context) : base(context)
         {
             // nothing to do here
         }
 
-        public async Task<IList<Country>> GetEntitiesAsync(long? id, string name, string code)
+        protected override async Task<Country> GetEntityAsync(Country entity)
         {
             return await Context.Countries
-                .Where(c => id == null || c.CountryId == id)
-                .Where(c => name == null || c.Name == name)
-                .Where(c => code == null || c.Code == code)
-                .ToListAsync();
+                .Where(c => c.Code == entity.Code || c.Name == entity.Name)
+                .FirstOrDefaultAsync();
         }
-
-        public async Task<IList<Country>> GetEntitiesByIdAsync(IEnumerable<long> ids, IEnumerable<string> includes)
+        
+        public async Task<IDictionary<string, Country>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids)
         {
-            return await Context.Countries
-                .IncludeMany(includes)
-                .Where(c => ids.Contains(c.CountryId))
-                .ToListAsync();
+            return await Context.Addresses
+                .Where(a => ids.Contains(a.Id))
+                .ToDictionaryAsync(key => key.Id.ToString(),
+                    value => value.Country);
         }
     }
 }

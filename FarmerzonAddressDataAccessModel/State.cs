@@ -1,13 +1,12 @@
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FarmerzonAddressDataAccessModel
 {
-    public class State
+    public class State : BaseModel
     {
-        // primary key
-        public long StateId { get; set; }
-        
         // relationships
+        [ForeignKey("StateId")]
         public IList<Address> Addresses { get; set; }
 
         // attributes

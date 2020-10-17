@@ -10,24 +10,23 @@ namespace FarmerzonAddressManager.Mapper
         public MappingProfile()
         {
             // Address
-            CreateMap<DAO.Address, DTO.Address>();
-            CreateMap<DTO.Address, DAO.Address>();
+            CreateMap<DAO.Address, DTO.AddressOutput>();
+            CreateMap<DTO.AddressInput, DAO.Address>();
 
             // City
-            CreateMap<DAO.City, DTO.City>();
-            CreateMap<DTO.City, DAO.City>();
+            CreateMap<DAO.City, DTO.CityOutput>();
+            CreateMap<DTO.CityInput, DAO.City>();
 
             // Country
-            CreateMap<DAO.Country, DTO.Country>();
-            CreateMap<DTO.Country, DAO.Country>();
-            
+            CreateMap<DAO.Country, DTO.CountryOutput>();
+            CreateMap<DTO.CountryInput, DAO.Country>();
+
             // Person
-            CreateMap<DAO.Person, DTO.Person>();
-            CreateMap<DTO.Person, DAO.Person>();
-            
+            CreateMap<DAO.Person, DTO.PersonOutput>();
+
             // State
-            CreateMap<DAO.State, DTO.State>();
-            CreateMap<DTO.State, DAO.State>();
+            CreateMap<DAO.State, DTO.StateOutput>();
+            CreateMap<DTO.StateInput, DAO.State>();
         }
     }
 }

@@ -22,9 +22,9 @@ namespace FarmerzonAddressManager.Implementation
         
         public async Task<DTO.CountryOutput> InsertEntityAsync(DTO.CountryInput entity)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var convertedCountry = Mapper.Map<DAO.Country>(entity);
                 var insertedCountry = await CountryRepository.InsertEntityAsync(convertedCountry);
                 await TransactionHandler.CommitTransactionAsync();
@@ -43,9 +43,9 @@ namespace FarmerzonAddressManager.Implementation
 
         public async Task<DTO.CountryOutput> UpdateEntityAsync(long id, DTO.CountryInput entity)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var foundCountry = await CountryRepository.GetEntityByIdAsync(id);
                 if (foundCountry == null)
                 {
@@ -72,9 +72,9 @@ namespace FarmerzonAddressManager.Implementation
 
         public async Task<DTO.CountryOutput> RemoveEntityByIdAsync(long id)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var removedCountry = await CountryRepository.RemoveEntityByIdAsync(id);
                 await TransactionHandler.CommitTransactionAsync();
                 return Mapper.Map<DTO.CountryOutput>(removedCountry);

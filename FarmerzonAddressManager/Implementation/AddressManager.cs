@@ -75,9 +75,9 @@ namespace FarmerzonAddressManager.Implementation
         public async Task<DTO.AddressOutput> InsertEntityAsync(DTO.AddressInput entity, string userName,
             string normalizedUserName)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var person = new DAO.Person
                 {
                     UserName = userName,
@@ -113,9 +113,9 @@ namespace FarmerzonAddressManager.Implementation
         public async Task<DTO.AddressOutput> UpdateEntityAsync(long id, DTO.AddressInput address, string userName,
             string normalizedUserName)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var foundAddress = await CheckAccessRightsAndGetAddressAsync(id, userName, normalizedUserName);
                 var (city, country, state) = await InsertOrGetAddressRelationsAsync(address);
                 foundAddress.City = city;
@@ -140,9 +140,9 @@ namespace FarmerzonAddressManager.Implementation
 
         public async Task<DTO.AddressOutput> DeleteEntityByIdAsync(long id, string userName, string normalizedUserName)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var foundAddress = await CheckAccessRightsAndGetAddressAsync(id, userName, normalizedUserName);
                 var removedAddress = await AddressRepository.RemoveEntityAsync(foundAddress);
                 await TransactionHandler.CommitTransactionAsync();

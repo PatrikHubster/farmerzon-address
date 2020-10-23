@@ -22,9 +22,9 @@ namespace FarmerzonAddressManager.Implementation
         
         public async Task<DTO.CityOutput> InsertEntityAsync(DTO.CityInput entity)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var convertedCity = Mapper.Map<DAO.City>(entity);
                 var insertedCity = await CityRepository.InsertEntityAsync(convertedCity);
                 await TransactionHandler.CommitTransactionAsync();
@@ -43,9 +43,9 @@ namespace FarmerzonAddressManager.Implementation
 
         public async Task<DTO.CityOutput> UpdateEntityAsync(long id, DTO.CityInput entity)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var foundCity = await CityRepository.GetEntityByIdAsync(id);
                 if (foundCity == null)
                 {
@@ -72,9 +72,9 @@ namespace FarmerzonAddressManager.Implementation
 
         public async Task<DTO.CityOutput> RemoveEntityByIdAsync(long id)
         {
-            await TransactionHandler.BeginTransactionAsync();
             try
             {
+                await TransactionHandler.BeginTransactionAsync();
                 var removedCity = await CityRepository.RemoveEntityByIdAsync(id);
                 await TransactionHandler.CommitTransactionAsync();
                 return Mapper.Map<DTO.CityOutput>(removedCity);

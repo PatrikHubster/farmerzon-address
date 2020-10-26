@@ -4,7 +4,7 @@ namespace FarmerzonAddressDataAccess.Implementation
     {
         protected FarmerzonAddressContext Context { get; set; }
 
-        public AbstractRepository(FarmerzonAddressContext context)
+        protected AbstractRepository(FarmerzonAddressContext context)
         {
             Context = context;
         }

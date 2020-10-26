@@ -174,7 +174,8 @@ namespace FarmerzonAddress.Controllers
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressesByStateIdAsync([FromQuery] IEnumerable<string> normalizedUserNames)
+        public async Task<IActionResult> GetAddressesByNormalizedUsernamesAsync(
+            [FromQuery] IEnumerable<string> normalizedUserNames)
         {
             var addresses = await AddressManager.GetEntitiesByNormalizedUserNamesAsync(normalizedUserNames);
             return Ok(new DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>

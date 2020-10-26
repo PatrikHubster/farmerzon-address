@@ -23,7 +23,6 @@ namespace FarmerzonAddress.Controllers
             StateManager = stateManager;
         }
         
-        [Topic("pubsub", "state")]
         [HttpPost]
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.StateOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status404NotFound)]

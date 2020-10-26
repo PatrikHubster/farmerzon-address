@@ -22,18 +22,7 @@ namespace FarmerzonAddress.Controllers
         {
             AddressManager = addressManager;
         }
-
-        /// <summary>
-        /// Inserts an address.
-        /// </summary>
-        /// <param name="address">The address which should be inserted into the system.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong.
-        /// </returns>
-        /// <response code="200">Insertion was able to execute.</response>
-        /// <response code="400">One or more optional parameters were not valid.</response>
-        /// <response code="500">Something unexpected happened.</response>
+        
         [HttpPost]
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -50,20 +39,7 @@ namespace FarmerzonAddress.Controllers
                 Content = insertedAddress
             });
         }
-
-        /// <summary>
-        /// Request a list of addresses.
-        /// </summary>
-        /// <param name="addressId">Optional parameter for querying for addresses.</param>
-        /// <param name="doorNumber">Optional parameter for querying for addresses.</param>
-        /// <param name="street">Optional parameter for querying for addresses.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong.
-        /// </returns>
-        /// <response code="200">Query was able to execute.</response>
-        /// <response code="400">One or more optional parameters were not valid.</response>
-        /// <response code="500">Something unexpected happened.</response>
+        
         [HttpGet]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IEnumerable<DTO.AddressOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -80,17 +56,6 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        /// <summary>
-        /// Request a list of addresses.
-        /// </summary>
-        /// <param name="cityIds">Find addresses to the listed city ids.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong.
-        /// </returns>
-        /// <response code="200">Query was able to execute.</response>
-        /// <response code="400">Article ids were invalid.</response>
-        /// <response code="500">Something unexpected happened.</response>
         [HttpGet("by-city-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
@@ -106,17 +71,6 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        /// <summary>
-        /// Request a list of addresses.
-        /// </summary>
-        /// <param name="countryIds">Find addresses to the listed country ids.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong.
-        /// </returns>
-        /// <response code="200">Query was able to execute.</response>
-        /// <response code="400">Article ids were invalid.</response>
-        /// <response code="500">Something unexpected happened.</response>
         [HttpGet("by-country-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
@@ -132,17 +86,6 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        /// <summary>
-        /// Request a list of addresses.
-        /// </summary>
-        /// <param name="stateIds">Find addresses to the listed state ids.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong.
-        /// </returns>
-        /// <response code="200">Query was able to execute.</response>
-        /// <response code="400">Article ids were invalid.</response>
-        /// <response code="500">Something unexpected happened.</response>
         [HttpGet("by-state-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
@@ -158,17 +101,6 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        /// <summary>
-        /// Request a list of addresses.
-        /// </summary>
-        /// <param name="normalizedUserNames">Find addresses to the listed normalized user names.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong.
-        /// </returns>
-        /// <response code="200">Query was able to execute.</response>
-        /// <response code="400">Article ids were invalid.</response>
-        /// <response code="500">Something unexpected happened.</response>
         [HttpGet("by-normalized-user-name")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
@@ -185,18 +117,6 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        /// <summary>
-        /// Update an address.
-        /// </summary>
-        /// <param name="addressId">The id of the address to update.</param>
-        /// <param name="address">The address which should be updated in the system.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong in the background.
-        /// </returns>
-        /// <response code="200">Update was able to execute.</response>
-        /// <response code="400">One or more optional parameters were not valid.</response>
-        /// <response code="500">Something unexpected happened.</response>
         [HttpPut]
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -214,18 +134,7 @@ namespace FarmerzonAddress.Controllers
                 Content = updatedAddress
             });
         }
-
-        /// <summary>
-        /// Delete an address.
-        /// </summary>
-        /// <param name="addressId">The id of the address to delete.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong.
-        /// </returns>
-        /// <response code="200">Deletion was able to execute.</response>
-        /// <response code="400">One or more optional parameters were not valid.</response>
-        /// <response code="500">Something unexpected happened.</response>
+        
         [HttpDelete]
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]

@@ -22,19 +22,6 @@ namespace FarmerzonAddress.Controllers
             PersonManager = personManager;
         }
         
-        /// <summary>
-        /// Request a list of people.
-        /// </summary>
-        /// <param name="personId">Optional parameter for querying for people.</param>
-        /// <param name="userName">Optional parameter for querying for people.</param>
-        /// <param name="normalizedUserName">Optional parameter for querying for people.</param>
-        /// <returns>
-        /// A bad request if the data aren't valid, an ok message if everything was fine or an internal server error if
-        /// something went wrong.
-        /// </returns>
-        /// <response code="200">Query was able to execute.</response>
-        /// <response code="400">One or more optional parameters were not valid.</response>
-        /// <response code="500">Something unexpected happened.</response>
         [HttpGet]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IEnumerable<DTO.PersonOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -50,5 +37,7 @@ namespace FarmerzonAddress.Controllers
                 Content = people
             });
         }
+        
+        
     }
 }

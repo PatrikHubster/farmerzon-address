@@ -144,7 +144,7 @@ namespace FarmerzonAddress.Controllers
             var userName = User.FindFirst("userName")?.Value;
             var normalizedUserName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             
-            var deletedAddress = await AddressManager.DeleteEntityByIdAsync(addressId, userName, normalizedUserName);
+            var deletedAddress = await AddressManager.RemoveEntityByIdAsync(addressId, userName, normalizedUserName);
             return Ok(new DTO.SuccessResponse<DTO.AddressOutput>
             {
                 Success = true,

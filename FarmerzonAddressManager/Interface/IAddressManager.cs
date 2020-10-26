@@ -13,7 +13,7 @@ namespace FarmerzonAddressManager.Interface
             string street = null);
         public Task<DTO.AddressOutput> UpdateEntityAsync(long id, DTO.AddressInput address, string userName,
             string normalizedUserName);
-        public Task<DTO.AddressOutput> DeleteEntityByIdAsync(long id, string userName, string normalizedUserName);
+        public Task<DTO.AddressOutput> RemoveEntityByIdAsync(long id, string userName, string normalizedUserName);
         
         public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByCityIdAsync(IEnumerable<long> ids);
         public Task<IDictionary<string, IList<DTO.AddressOutput>>> GetEntitiesByCountryIdAsync(IEnumerable<long> ids);

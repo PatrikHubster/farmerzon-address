@@ -138,7 +138,7 @@ namespace FarmerzonAddressManager.Implementation
             }
         }
 
-        public async Task<DTO.AddressOutput> DeleteEntityByIdAsync(long id, string userName, string normalizedUserName)
+        public async Task<DTO.AddressOutput> RemoveEntityByIdAsync(long id, string userName, string normalizedUserName)
         {
             try
             {

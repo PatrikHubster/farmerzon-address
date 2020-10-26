@@ -4,9 +4,9 @@ namespace FarmerzonAddressDataAccess.Interface
 {
     public interface ITransactionHandler
     {
-        Task BeginTransactionAsync();
-        Task CommitTransactionAsync();
-        Task RollbackTransactionAsync();
-        Task DisposeTransactionAsync();
+        public Task BeginTransactionAsync();
+        public Task CommitTransactionAsync();
+        public Task RollbackTransactionAsync();
+        public Task DisposeTransactionAsync();
     }
 }

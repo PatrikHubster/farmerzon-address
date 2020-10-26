@@ -201,7 +201,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> UpdateAddress([FromQuery] long addressId, [FromBody] DTO.AddressInput address)
+        public async Task<IActionResult> UpdateAddressAsync([FromQuery] long addressId, [FromBody] DTO.AddressInput address)
         {
             var userName = User.FindFirst("userName")?.Value;
             var normalizedUserName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -230,7 +230,7 @@ namespace FarmerzonAddress.Controllers
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> DeleteAddress([FromQuery] long addressId)
+        public async Task<IActionResult> DeleteAddressAsync([FromQuery] long addressId)
         {
             var userName = User.FindFirst("userName")?.Value;
             var normalizedUserName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

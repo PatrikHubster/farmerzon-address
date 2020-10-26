@@ -1,9 +1,11 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using FarmerzonAddressDataAccessModel;
 
 namespace FarmerzonAddressDataAccess.Interface
 {
     public interface IPersonRepository : IBasicRepository<Person>
     {
-        // nothing to do here
+        public Task<IDictionary<string, Person>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids);
     }
 }

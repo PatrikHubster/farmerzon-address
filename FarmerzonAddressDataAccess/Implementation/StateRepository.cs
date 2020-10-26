@@ -24,6 +24,7 @@ namespace FarmerzonAddressDataAccess.Implementation
         {
             return await Context.Addresses
                 .Where(a => ids.Contains(a.Id))
+                .Include("State")
                 .ToDictionaryAsync(key => key.Id.ToString(),
                     value => value.State);
         }

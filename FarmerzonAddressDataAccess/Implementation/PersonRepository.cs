@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using FarmerzonAddressDataAccess.Interface;
@@ -18,6 +19,15 @@ namespace FarmerzonAddressDataAccess.Implementation
             return await Context.People
                 .Where(p =>  p.NormalizedUserName == entity.NormalizedUserName)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<IDictionary<string, Person>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids)
+        {
+            return await Context.Addresses
+                .Where(a => ids.Contains(a.Id))
+                .Include("Person")
+                .ToDictionaryAsync(key => key.Id.ToString(),
+                    value => value.Person);
         }
     }
 }

@@ -37,7 +37,21 @@ namespace FarmerzonAddress.Controllers
                 Content = people
             });
         }
-        
+
+        [HttpGet("get-by-address-id")]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.PersonOutput>>),
+            StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetPeopleByAddressIdAsync([FromQuery] IEnumerable<long> addressIds)
+        {
+            var people = await PersonManager.GetEntitiesByAddressIdAsync(addressIds);
+            return Ok(new DTO.SuccessResponse<IDictionary<string, DTO.PersonOutput>>
+            {
+                Success = true,
+                Content = people
+            });
+        }
         
     }
 }

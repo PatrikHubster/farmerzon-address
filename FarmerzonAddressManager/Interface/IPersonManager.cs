@@ -9,5 +9,6 @@ namespace FarmerzonAddressManager.Interface
     {
         Task<IEnumerable<DTO.PersonOutput>> GetEntitiesAsync(long? id = null, string userName = null,
             string normalizedUserName = null);
+        Task<IDictionary<string, DTO.PersonOutput>> GetEntitiesByAddressIdAsync(IEnumerable<long> addressIds);
     }
 }

@@ -29,7 +29,9 @@ namespace FarmerzonAddressDataAccess
             {
                 return query.IncludeMany(includes);
             }
-            
+
+            query = query.Include(relationship);
+
             if (includes == null)
             {
                 return query;

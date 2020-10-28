@@ -6,6 +6,7 @@ namespace FarmerzonAddressDataAccess.Interface
 {
     public interface ICityRepository : IBasicRepository<City>
     {
-        public Task<IDictionary<string, City>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids);
+        public Task<IDictionary<string, City>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids, 
+            IEnumerable<string> includes = null);
     }
 }

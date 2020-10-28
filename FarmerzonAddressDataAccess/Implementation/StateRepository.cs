@@ -20,11 +20,12 @@ namespace FarmerzonAddressDataAccess.Implementation
                 .FirstOrDefaultAsync();
         }
         
-        public async Task<IDictionary<string, State>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids)
+        public async Task<IDictionary<string, State>> GetEntitiesByAddressIdAsync(IEnumerable<long> ids, 
+            IEnumerable<string> includes = null)
         {
             return await Context.Addresses
                 .Where(a => ids.Contains(a.Id))
-                .Include("State")
+                .IncludeMany(includes, "State")
                 .ToDictionaryAsync(key => key.Id.ToString(),
                     value => value.State);
         }

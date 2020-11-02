@@ -1,4 +1,6 @@
 FROM mcr.microsoft.com/dotnet/core/sdk:3.1.401-focal-arm64v8 AS base
+COPY qemu-aarch64-static /usr/bin/
+
 WORKDIR /app
 ENV ASPNETCORE_ENVIRONMENT Production
 ENV ASPNETCORE_URLS http://*:5000

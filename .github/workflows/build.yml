@@ -27,6 +27,8 @@ jobs:
         run: docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
       
       - name: Build Manifest
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }} 
         run: |
           docker build --tag ${DOCKER_USERNAME}/farmerzon-address:manifest-arm64v8 --build-arg IMAGE=3.1.401-focal-arm64v8 .
           docker build --tag ${DOCKER_USERNAME}/farmerzon-address:manifest-amd64 --build-arg IMAGE=3.1.401-focal .

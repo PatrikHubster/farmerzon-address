@@ -24,7 +24,4 @@ jobs:
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: |
-          echo "${DOCKER_PASSWORD}"
-          echo "${DOCKER_USERNAME}"
-          docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+        run: docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}

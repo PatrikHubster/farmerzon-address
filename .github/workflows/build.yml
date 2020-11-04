@@ -24,11 +24,10 @@ jobs:
         env:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        run: 
-          docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+        run: docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
       
       - name: Build Manifest
-        run: 
+        run: |
           docker build -t ${DOCKER_USERNAME}/farmerzon-address:manifest-arm64v8 --build-arg IMAGE=3.1.401-focal-arm64v8 .
           docker build -t ${DOCKER_USERNAME}/farmerzon-address:manifest-amd64 --build-arg IMAGE=3.1.401-focal .
           docker push ${DOCKER_USERNAME}/farmerzon-address:manifest-arm64v8

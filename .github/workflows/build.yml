@@ -30,13 +30,13 @@ jobs:
           docker buildx build \
           --platform=linux/arm64 \
           --output "type=image,push=true" \
-          --build-arg IMAGE=3.1.401-focal-arm64v8
+          --build-arg IMAGE=3.1.401-focal-arm64v8 \
           --file ./Dockerfile . \
           --tag ${DOCKER_USERNAME}/farmerzon-address:latest-arm64v8
           docker buildx build \
           --platform=linux/amd64 \
           --output "type=image,push=true" \
-          --build-arg IMAGE=3.1.401-focal
+          --build-arg IMAGE=3.1.401-focal \
           --file ./Dockerfile . \
           --tag ${DOCKER_USERNAME}/farmerzon-address:latest-amd64
           docker manifest create ${DOCKER_USERNAME}/farmerzon-address:latest \

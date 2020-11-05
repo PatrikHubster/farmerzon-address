@@ -28,8 +28,8 @@ jobs:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }} 
           DOCKER_CLI_EXPERIMENTAL: enabled
         run: |
-          echo ${DOCKER_USERNAME}
-          docker manifest create "echo ${DOCKER_USERNAME}/farmerzon-address:latest" \
+          docker manifest create \
           --amend "${DOCKER_USERNAME}/farmerzon-address:latest-amd64" \ 
-          --amend "${DOCKER_USERNAME}/farmerzon-address:latest-arm64v8"
+          --amend "${DOCKER_USERNAME}/farmerzon-address:latest-arm64v8" \
+          "${DOCKER_USERNAME}/farmerzon-address:latest"
           docker manifest push "${DOCKER_USERNAME}/farmerzon-address:latest"

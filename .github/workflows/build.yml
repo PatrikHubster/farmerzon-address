@@ -40,7 +40,7 @@ jobs:
           --file ./Dockerfile . \
           --tag ${DOCKER_USERNAME}/farmerzon-address:latest-amd64
           export DOCKER_CLI_EXPERIMENTAL=enabled
-          docker manifest create ${DOCKER_USERNAME}/farmerzon-address:latest \
-          --amend ${DOCKER_USERNAME}/farmerzon-address:latest-amd64 \ 
-          --amend ${DOCKER_USERNAME}/farmerzon-address:latest-arm64v8
-          docker manifest push ${DOCKER_USERNAME}/farmerzon-address:latest
+          docker manifest create "${DOCKER_USERNAME}/farmerzon-address:latest" \
+          --amend "${DOCKER_USERNAME}/farmerzon-address:latest-amd64" \ 
+          --amend "${DOCKER_USERNAME}/farmerzon-address:latest-arm64v8"
+          docker manifest push "${DOCKER_USERNAME}/farmerzon-address:latest"

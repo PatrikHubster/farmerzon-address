@@ -24,9 +24,6 @@ jobs:
         uses: crazy-max/ghaction-docker-buildx@v1
 
       - name: Build Manifest
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }} 
-          DOCKER_CLI_EXPERIMENTAL: enabled
         run: |
           docker manifest create patrikhuber/farmerzon-address:latest \
           --amend patrikhuber/farmerzon-address:latest-amd64 \ 

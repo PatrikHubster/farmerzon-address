@@ -1,6 +1,6 @@
 namespace FarmerzonAddressDataTransferModel
 {
-    public class PersonOutput : BaseModelOutput
+    public class PersonOutput
     {
         // attributes
         public string UserName { get; set; }

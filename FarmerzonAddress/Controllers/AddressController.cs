@@ -56,7 +56,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("by-city-id")]
+        [HttpGet("get-by-city-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -71,7 +71,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("by-country-id")]
+        [HttpGet("get-by-country-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -86,7 +86,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("by-state-id")]
+        [HttpGet("get-by-state-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -101,7 +101,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("by-normalized-user-name")]
+        [HttpGet("get-by-normalized-user-name")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]

@@ -13,6 +13,10 @@ namespace FarmerzonAddressManager.Implementation
     public class StateManager : AbstractManager, IStateManager
     {
         private IStateRepository StateRepository { get; set; }
+        private static IList<string> Includes = new List<string>
+        {
+            nameof(DAO.State.Addresses)
+        };
 
         public StateManager(ITransactionHandler transactionHandler, IMapper mapper, IStateRepository stateRepository) :
             base(transactionHandler, mapper)
@@ -73,7 +77,13 @@ namespace FarmerzonAddressManager.Implementation
             try
             {
                 await TransactionHandler.BeginTransactionAsync();
-                var removedState = await StateRepository.RemoveEntityByIdAsync(id);
+                var stateToRemove = await StateRepository.GetEntityAsync(filter: s => s.Id == id, includes: Includes);
+                if (stateToRemove.Addresses != null && stateToRemove.Addresses.Count > 0)
+                {
+                    throw new BadRequestException("This state is used by another address.");
+                }
+
+                var removedState = await StateRepository.RemoveEntityAsync(stateToRemove);
                 await TransactionHandler.CommitTransactionAsync();
                 return Mapper.Map<DTO.StateOutput>(removedState);
             }

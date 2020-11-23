@@ -71,7 +71,7 @@ namespace FarmerzonAddressManager.Implementation
 
             return foundAddress;
         }
-
+        
         public async Task<DTO.AddressOutput> InsertEntityAsync(DTO.AddressInput entity, string userName,
             string normalizedUserName)
         {

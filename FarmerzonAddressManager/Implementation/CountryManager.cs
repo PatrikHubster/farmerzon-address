@@ -13,6 +13,11 @@ namespace FarmerzonAddressManager.Implementation
     public class CountryManager : AbstractManager, ICountryManager
     {
         private ICountryRepository CountryRepository { get; set; }
+
+        private static readonly IList<string> Includes = new List<string>
+        {
+            nameof(DAO.Country.Addresses)
+        };
         
         public CountryManager(ITransactionHandler transactionHandler, IMapper mapper, 
             ICountryRepository countryRepository) : base(transactionHandler, mapper)
@@ -75,7 +80,14 @@ namespace FarmerzonAddressManager.Implementation
             try
             {
                 await TransactionHandler.BeginTransactionAsync();
-                var removedCountry = await CountryRepository.RemoveEntityByIdAsync(id);
+                var countryToRemove =
+                    await CountryRepository.GetEntityAsync(filter: c => c.Id == id, includes: Includes);
+                if (countryToRemove.Addresses != null && countryToRemove.Addresses.Count > 0)
+                {
+                    throw new BadRequestException("This country is used by another address.");
+                }
+                
+                var removedCountry = await CountryRepository.RemoveEntityAsync(countryToRemove);
                 await TransactionHandler.CommitTransactionAsync();
                 return Mapper.Map<DTO.CountryOutput>(removedCountry);
             }

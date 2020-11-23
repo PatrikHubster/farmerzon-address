@@ -13,6 +13,11 @@ namespace FarmerzonAddressManager.Implementation
     public class CityManager : AbstractManager, ICityManager
     {
         private ICityRepository CityRepository { get; set; }
+
+        private static readonly IList<string> Includes = new List<string>
+        {
+            nameof(DAO.City.Addresses)
+        };
         
         public CityManager(ITransactionHandler transactionHandler, IMapper mapper, ICityRepository cityRepository) : 
             base(transactionHandler, mapper)
@@ -75,7 +80,13 @@ namespace FarmerzonAddressManager.Implementation
             try
             {
                 await TransactionHandler.BeginTransactionAsync();
-                var removedCity = await CityRepository.RemoveEntityByIdAsync(id);
+                var cityToRemove = await CityRepository.GetEntityAsync(filter: c => c.Id == id, includes: Includes);
+                if (cityToRemove.Addresses != null && cityToRemove.Addresses.Count > 0)
+                {
+                    throw new BadRequestException("This city is used by another address.");
+                }
+                
+                var removedCity = await CityRepository.RemoveEntityAsync(cityToRemove);
                 await TransactionHandler.CommitTransactionAsync();
                 return Mapper.Map<DTO.CityOutput>(removedCity);
             }

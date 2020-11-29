@@ -11,6 +11,7 @@ namespace FarmerzonAddressDataAccess.Implementation
     {
         public StateRepository(FarmerzonAddressContext context) : base(context)
         {
+            // nothing to do here
         }
 
         protected override async Task<State> GetEntityAsync(State entity)

@@ -56,12 +56,12 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("get-by-city-id")]
+        [HttpPost("get-by-city-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressesByCityIdAsync([FromQuery] IEnumerable<long> cityIds)
+        public async Task<IActionResult> GetAddressesByCityIdAsync([FromBody] IEnumerable<long> cityIds)
         {
             var addresses = await AddressManager.GetEntitiesByCityIdAsync(cityIds);
             return Ok(new DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>
@@ -71,12 +71,12 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("get-by-country-id")]
+        [HttpPost("get-by-country-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressesByCountryIdAsync([FromQuery] IEnumerable<long> countryIds)
+        public async Task<IActionResult> GetAddressesByCountryIdAsync([FromBody] IEnumerable<long> countryIds)
         {
             var addresses = await AddressManager.GetEntitiesByCountryIdAsync(countryIds);
             return Ok(new DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>
@@ -86,12 +86,12 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("get-by-state-id")]
+        [HttpPost("get-by-state-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetAddressesByStateIdAsync([FromQuery] IEnumerable<long> stateIds)
+        public async Task<IActionResult> GetAddressesByStateIdAsync([FromBody] IEnumerable<long> stateIds)
         {
             var addresses = await AddressManager.GetEntitiesByStateIdAsync(stateIds);
             return Ok(new DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>
@@ -101,13 +101,13 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("get-by-normalized-user-name")]
+        [HttpPost("get-by-normalized-user-name")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> GetAddressesByNormalizedUsernamesAsync(
-            [FromQuery] IEnumerable<string> normalizedUserNames)
+            [FromBody] IEnumerable<string> normalizedUserNames)
         {
             var addresses = await AddressManager.GetEntitiesByNormalizedUserNamesAsync(normalizedUserNames);
             return Ok(new DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>

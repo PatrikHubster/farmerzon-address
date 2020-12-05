@@ -50,12 +50,12 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("get-by-address-id")]
+        [HttpPost("get-by-address-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.StateOutput>>), 
             StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetStatesByAddressIdAsync([FromQuery] IEnumerable<long> addressIds)
+        public async Task<IActionResult> GetStatesByAddressIdAsync([FromBody] IEnumerable<long> addressIds)
         {
             var states = await StateManager.GetEntitiesByAddressIdAsync(addressIds);
             return Ok(new DTO.SuccessResponse<IDictionary<string, DTO.StateOutput>>

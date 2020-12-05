@@ -51,11 +51,11 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
-        [HttpGet("get-by-address-id")]
+        [HttpPost("get-by-address-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, DTO.CityOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
-        public async Task<IActionResult> GetCitiesByAddressIdAsync([FromQuery] IEnumerable<long> addressIds)
+        public async Task<IActionResult> GetCitiesByAddressIdAsync([FromBody] IEnumerable<long> addressIds)
         {
             var cities = await CityManager.GetEntitiesByAddressIdAsync(addressIds);
             return Ok(new DTO.SuccessResponse<IDictionary<string, DTO.CityOutput>>

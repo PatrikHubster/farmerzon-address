@@ -46,6 +46,9 @@ namespace FarmerzonAddress
                 PropertyNameCaseInsensitive = true
             });
 
+            // for Kubernetes health checks
+            services.AddHealthChecks();
+            
             // Disable default model validation like it is described under the following link
             // https://www.talkingdotnet.com/disable-automatic-model-state-validation-in-asp-net-core-2-1/
             services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
@@ -168,6 +171,9 @@ namespace FarmerzonAddress
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapSubscribeHandler();
+                endpoints.MapHealthChecks("/health/startup");
+                endpoints.MapHealthChecks("/healthz");
+                endpoints.MapHealthChecks("/ready");
                 endpoints.MapControllers();
             });
             

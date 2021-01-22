@@ -14,7 +14,7 @@ COPY ./FarmerzonAddressDataAccessModel/*.csproj FarmerzonAddressDataAccessModel/
 COPY ./FarmerzonAddressDataTransferModel/*.csproj FarmerzonAddressDataTransferModel/
 COPY ./FarmerzonAddressErrorHandling/*.csproj  FarmerzonAddressErrorHandling/
 COPY ./FarmerzonAddressManager/*.csproj FarmerzonAddressManager/
-RUN dotnet restore --verbosity detailed
+RUN dotnet restore --verbosity quiet
 COPY . .
 WORKDIR /src/FarmerzonAddress
 RUN dotnet build -c $Configuration -o /app

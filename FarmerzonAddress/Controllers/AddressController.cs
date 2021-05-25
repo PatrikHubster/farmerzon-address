@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Dapr;
 using FarmerzonAddressManager.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -11,7 +12,6 @@ using DTO = FarmerzonAddressDataTransferModel;
 
 namespace FarmerzonAddress.Controllers
 {
-    [Authorize]
     [Route("address")]
     [ApiController]
     public class AddressController : ControllerBase
@@ -23,6 +23,23 @@ namespace FarmerzonAddress.Controllers
             AddressManager = addressManager;
         }
         
+        [Topic("pubsub", "address")]
+        [HttpPost("topic-address")]
+        [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> TopicAddressAsync([FromBody] DTO.AddressWithUserInput address)
+        {
+            var insertedAddress = await AddressManager.InsertEntityAsync(address, 
+                address.UserName, address.NormalizedUserName);
+            return Ok(new DTO.SuccessResponse<DTO.AddressOutput>
+            {
+                Success = true,
+                Content = insertedAddress
+            });
+        }
+
+        [Authorize]
         [HttpPost]
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -39,7 +56,8 @@ namespace FarmerzonAddress.Controllers
                 Content = insertedAddress
             });
         }
-        
+
+        [Authorize]
         [HttpGet]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IEnumerable<DTO.AddressOutput>>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -56,6 +74,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
+        [Authorize]
         [HttpPost("get-by-city-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
@@ -71,6 +90,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
+        [Authorize]
         [HttpPost("get-by-country-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
@@ -86,6 +106,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
+        [Authorize]
         [HttpPost("get-by-state-id")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
@@ -101,6 +122,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
+        [Authorize]
         [HttpPost("get-by-normalized-user-name")]
         [ProducesResponseType(typeof(DTO.SuccessResponse<IDictionary<string, IList<DTO.AddressOutput>>>), 
             StatusCodes.Status200OK)]
@@ -117,6 +139,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
+        [Authorize]
         [HttpPut]
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
@@ -135,6 +158,7 @@ namespace FarmerzonAddress.Controllers
             });
         }
         
+        [Authorize]
         [HttpDelete]
         [ProducesResponseType(typeof(DTO.SuccessResponse<DTO.AddressOutput>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(DTO.ErrorResponse), StatusCodes.Status400BadRequest)]
